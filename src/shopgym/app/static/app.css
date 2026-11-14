@@ -28,7 +28,7 @@ p { margin: 0 0 1em; max-width: var(--measure); }
 .wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
 
 /* evaluation banner */
-.env-banner { margin: 0; padding: 0.35rem 1.25rem; background: var(--signal); color: var(--signal-ink); font-size: 0.85rem; text-align: center; letter-spacing: 0.01em; }
+.env-banner { max-width: none; margin: 0; padding: 0.35rem 1.25rem; background: var(--signal); color: var(--signal-ink); font-size: 0.85rem; text-align: center; letter-spacing: 0.01em; }
 
 /* header */
 header.site { background: var(--spruce); color: var(--paper); }
@@ -101,7 +101,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .filters { position: sticky; top: 1rem; border-top: 2px solid var(--ink); padding-top: 1rem; }
 .results-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--rule); padding-bottom: 0.6rem; margin-bottom: 0.4rem; }
 .product-list { list-style: none; margin: 0; padding: 0; }
-.product-list li { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; padding: 1.1rem 0; border-bottom: 1px solid var(--rule); }
+.product-list li { display: grid; grid-template-columns: auto 1fr auto; gap: 1.2rem; align-items: center; padding: 1.1rem 0; border-bottom: 1px solid var(--rule); }
 .product-list h3 { margin: 0 0 0.2rem; font-size: 1.2rem; }
 .product-list h3 a { color: var(--ink); text-decoration: none; }
 .product-list h3 a:hover { text-decoration: underline; color: var(--signal); }
@@ -148,7 +148,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .timeline time { color: var(--muted); display: block; font-size: 0.85rem; }
 
 /* admin */
-.admin-bar { background: var(--paper-deep); border-bottom: 1px solid var(--rule); }
+.admin-bar { background: var(--paper-deep); border-bottom: 1px solid var(--rule); margin: -2.2rem calc(50% - 50vw) 2rem; }
 .admin-bar .wrap { display: flex; gap: 1.4rem; padding-top: 0.6rem; padding-bottom: 0.6rem; font-size: 0.95rem; flex-wrap: wrap; }
 .admin-bar a { color: var(--ink); text-decoration: none; font-weight: 600; }
 .admin-bar a.on { text-decoration: underline; text-underline-offset: 4px; }
@@ -171,3 +171,41 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
 .results-title { font-size: 1.8rem; margin: 0; }
+
+/* generated product plates: category motif on a tinted square */
+.plate { display: grid; place-items: center; flex: none; background: var(--plate-bg, #dfe5dc); color: var(--plate-ink, var(--spruce)); border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(23,35,31,0.08); }
+.plate svg { width: 70%; height: 70%; fill: currentColor; overflow: visible; }
+.plate-sm { width: 4.5rem; height: 4.5rem; }
+.plate-lg { width: 100%; max-width: 26rem; aspect-ratio: 1 / 1; margin-bottom: 1.6rem; }
+.plate-lg svg { width: 62%; height: 62%; }
+.cat-books { --plate-bg: #e8dcc2; --plate-ink: #6b4a2b; }
+.cat-clothing { --plate-bg: #d7e3e9; --plate-ink: #27495c; }
+.cat-electronics { --plate-bg: #d6dbdf; --plate-ink: #2b3640; }
+.cat-garden { --plate-bg: #d4e5d2; --plate-ink: #1f4d42; }
+.cat-home { --plate-bg: #f0ded2; --plate-ink: #8a4a2a; }
+.cat-toys { --plate-bg: #f3e6b8; --plate-ink: #7a5d12; }
+
+/* home: space between the hero rule and the department list; featured rows carry a plate */
+.hero + section { margin-top: 2.5rem; }
+.hero + section h2 { margin-bottom: 0.2rem; }
+.feature-list li { align-items: center; justify-content: flex-start; }
+.feature-list li > a { flex: 1; }
+.feature-list .plate { width: 3rem; height: 3rem; }
+
+/* empty states: one ruled block, not a bare sentence on a blank page */
+.empty { border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 2.2rem 0; font-size: 1.1rem; }
+.empty p { margin: 0; }
+
+/* footer: a real band, not loose text */
+.site-footer { margin-top: 3.5rem; background: var(--paper-deep); border-top: 1px solid var(--rule); padding: 2.6rem 0 3rem; }
+.site-footer h2 { font-size: 1.3rem; }
+.site-footer h3 { font-size: 1.1rem; }
+.site-footer .two { gap: 3rem; }
+
+@media (max-width: 520px) {
+  .product-list li { grid-template-columns: 4.5rem 1fr; gap: 0.9rem; }
+  .product-list .plate { width: 4.5rem; height: 4.5rem; }
+  .product-list .price-col { grid-column: 2; flex-direction: row; justify-content: space-between; align-items: center; }
+  .results-title { font-size: 1.5rem; }
+  .cats a { font-size: 1.15rem; }
+}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_macros.html" import plate %}
 {% block title %}Ridgeline Supply, outdoor and home goods{% endblock %}
 {% block content %}
 <section class="hero">
@@ -13,6 +14,7 @@
   <ul class="feature-list" aria-label="Featured products">
     {% for p in featured %}
     <li>
+      {{ plate(p) }}
       <a href="/products/{{ p['sku'] }}">{{ p['name'] }}</a>
       <span class="tag">{{ p['price_cents'] | money }}</span>
     </li>

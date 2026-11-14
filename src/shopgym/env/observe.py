@@ -59,9 +59,11 @@ WALK_JS = """
         counter += 1;
         const id = 'e' + counter;
         el.setAttribute('data-sg-id', id);
+        const r = el.getBoundingClientRect();
         const node = { kind: 'el', id, role: roleOf(el), name: nameOf(el), tag, type: el.getAttribute('type') || '',
           value: el.value !== undefined ? String(el.value) : '', disabled: !!el.disabled,
-          checked: !!el.checked, href: el.tagName === 'A' ? el.getAttribute('href') : '' };
+          checked: !!el.checked, href: el.tagName === 'A' ? el.getAttribute('href') : '',
+          box: [r.x, r.y, r.width, r.height].map((v) => Math.round(v)) };
         if (tag === 'select') {
           node.options = Array.from(el.options).map((o) => ({ value: o.value, label: clean(o.text), selected: o.selected }));
         }
@@ -93,6 +95,7 @@ class Element:
     checked: bool = False
     href: str = ""
     options: tuple = ()
+    box: tuple = ()  # x, y, width, height in viewport pixels when observed; used for replay highlights
 
 
 @dataclass(frozen=True)
@@ -138,7 +141,7 @@ def _element_from(node: dict) -> Element:
     options = tuple((o["value"], o["label"], o["selected"]) for o in node.get("options", []))
     return Element(id=node["id"], role=node["role"], name=node["name"], value=node["value"], tag=node["tag"],
                    type=node["type"], disabled=node["disabled"], checked=node["checked"], href=node["href"],
-                   options=options)
+                   options=options, box=tuple(node.get("box", ())))
 
 
 def _render_text(node: dict) -> str:

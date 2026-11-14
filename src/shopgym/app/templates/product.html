@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-{% from "_macros.html" import stock_line, stars, pager, field %}
+{% from "_macros.html" import stock_line, stars, pager, field, plate %}
 {% block title %}{{ product['name'] }}, Ridgeline Supply{% endblock %}
 {% block content %}
 <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/products?category={{ product['category_slug'] }}">{{ product['category_name'] }}</a> / {{ product['name'] }}</nav>
 <div class="product-page">
   <section>
+    {{ plate(product, "lg") }}
     <h1>{{ product['name'] }}</h1>
     <p>{{ product['description'] }}</p>
     <p class="meta">SKU {{ product['sku'] }}</p>

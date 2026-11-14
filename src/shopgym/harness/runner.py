@@ -36,6 +36,12 @@ def _action_record(action: Any) -> Any:
     return action
 
 
+def _target_box(obs: Observation, action: Any) -> list[int] | None:
+    """Viewport box of the element an action acts on, so the replay can highlight it."""
+    element = obs.element(getattr(action, "element", None) or "")
+    return list(element.box) if element and element.box else None
+
+
 def run_episode(agent: Any, task: Task, *, base_url: str, data_dir: Path, out_dir: Path, seed: int,
                 headless: bool = True) -> dict[str, Any]:
     """One agent, one task, one seed. Always returns a result dict, even if the agent crashes."""
@@ -55,7 +61,8 @@ def run_episode(agent: Any, task: Task, *, base_url: str, data_dir: Path, out_di
                 before = _obs_record(obs, shots, label)
                 result = env.step(action)
                 steps.append({"before": before, "action": _action_record(action), "reward": result.reward,
-                              "done": result.done, "info": result.info, "error": result.info.get("error")})
+                              "done": result.done, "info": result.info, "error": result.info.get("error"),
+                              "target": _target_box(obs, action)})
                 obs, info, reward = result.observation, result.info, result.reward
                 if result.done:
                     break

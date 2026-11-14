@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Admin, Ridgeline Supply{% endblock %}
 {% block content %}
-<nav class="admin-bar" aria-label="Admin sections" style="margin:-2.2rem -1.25rem 2rem;padding-left:0;padding-right:0">
+<nav class="admin-bar" aria-label="Admin sections">
   <div class="wrap">
     {% for href, label, key in [("/admin", "Dashboard", "dashboard"), ("/admin/orders", "Orders", "orders"), ("/admin/products", "Products", "products"), ("/admin/reviews", "Reviews", "reviews"), ("/admin/newsletter", "Newsletter", "newsletter")] %}
     <a href="{{ href }}"{% if section == key %} class="on" aria-current="page"{% endif %}>{{ label }}</a>

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import stock_line, stars, pager %}
+{% from "_macros.html" import stock_line, stars, pager, plate %}
 {% block title %}Shop, Ridgeline Supply{% endblock %}
 {% block content %}
 {% set f = filters %}
@@ -36,6 +36,7 @@
     <ul class="product-list">
       {% for p in products %}
       <li>
+        {{ plate(p) }}
         <div>
           <h3><a href="/products/{{ p['sku'] }}">{{ p['name'] }}</a></h3>
           <p class="meta">{{ p['category_name'] }} · {{ stock_line(p['stock']) }}</p>
