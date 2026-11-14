@@ -1,0 +1,33 @@
+[project]
+name = "shopgym"
+version = "0.1.0"
+description = "ShopGym: self-hosted shop and browser-agent evaluation environment"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=2.8.0",
+    "jinja2>=3.1.6",
+    "pillow>=13.0.0",
+    "playwright>=1.65.2",
+    "python-multipart>=0.0.33",
+    "pyyaml>=6.0.3",
+    "starlette>=1.10.0",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+shopgym = "shopgym.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.10.7,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["e2e: drives a real browser against the live server (slower)"]
