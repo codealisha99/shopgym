@@ -3,13 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ShopGym: a browser-agent benchmark graded by the database</title>
-<meta name="description" content="ShopGym is a self-hosted shop and a browser-agent evaluation environment. 27 tasks, each graded by a checker that diffs database snapshots and the final answer. Headless, no API keys.">
+<title>ShopGym: browser agents, graded by the database</title>
+<meta name="description" content="ShopGym is a self-hosted shop and an evaluation environment for browser agents. 27 tasks, each graded by a checker that diffs database snapshots and the final answer. Headless, no API keys.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ShopGym: browser agents graded by the database">
+<meta property="og:title" content="ShopGym: browser agents, graded by the database">
 <meta property="og:description" content="27 shop tasks, each checked against database state, not the transcript. Scripted oracle 27/27, no-op and random 0/27.">
 <meta property="og:image" content="og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ShopGym: browser agents, graded by the database">
+<meta name="twitter:image" content="og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%2314202b'/%3E%3Cpath d='M3 8.5l3 3 7-7' stroke='%2347c28f' stroke-width='2.2' fill='none'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,9 +28,9 @@
     <a class="name" href="#top">ShopGym</a>
     <nav aria-label="Sections">
       <a href="#how">Grading</a>
-      <a href="#replay">Replay</a>
       <a href="#results">Results</a>
       <a href="#tasks">Tasks</a>
+      <a href="#code">Code</a>
       <a href="#run">Run it</a>
       <a href="https://github.com/codealisha99/shopgym">GitHub</a>
     </nav>
@@ -36,32 +40,124 @@
 <main id="main">
 <section class="hero wrap" id="top">
   <div class="hero-copy">
-    <h1>Did the order really get cancelled? ShopGym checks the database, not the transcript.</h1>
-    <p class="lede">ShopGym is a self-hosted shop with an admin panel, and an environment that lets a browser agent act on it through screenshots and a text view of the page. Each of its 27 tasks has a checker that diffs database snapshots and the agent's final answer, and fails any side effect the task did not ask for.</p>
+    <h1>Browser agents, graded by the database.</h1>
+    <p class="lede">ShopGym is a self-hosted shop and an environment that lets a browser agent act on it. Each of its 27 tasks is checked against the database and the final answer, so a confident transcript cannot pass.</p>
     <p class="actions">
-      <a class="btn" href="#run">Run the store locally</a>
-      <a class="btn quiet" href="https://github.com/codealisha99/shopgym">Read the source</a>
+      <a class="btn" href="#replay" data-play-replay>Watch a run</a>
+      <a class="btn quiet" href="https://github.com/codealisha99/shopgym">Source on GitHub</a>
     </p>
-    <p class="livestatus">No live demo is running yet. The shop runs locally with one command, and this page shows real output from that run.</p>
+    <p class="fineprint">Recorded from <code>make demo</code>, seed 7. The agent is a scripted oracle, not a language model.</p>
   </div>
 
-  <figure class="board" aria-labelledby="board-title">
-    <figcaption id="board-title">Every task, every agent. One cell per task, grouped by tier.</figcaption>
-    <div class="board-head" aria-hidden="true"><span></span><span>easy 9</span><span>medium 12</span><span>hard 6</span></div>
-        <div class="board-row" role="img" aria-label="oracle: easy 9 of 9, medium 12 of 12, hard 6 of 6"><span class="agent">oracle</span><span class="group"><i class="pass" title="oracle: newsletter-subscribe passed" style="--i:0"></i><i class="pass" title="oracle: search-count passed" style="--i:1"></i><i class="pass" title="oracle: product-price passed" style="--i:2"></i><i class="pass" title="oracle: cheapest-electronics passed" style="--i:3"></i><i class="pass" title="oracle: add-to-cart passed" style="--i:4"></i><i class="pass" title="oracle: order-status-after-login passed" style="--i:5"></i><i class="pass" title="oracle: register-account passed" style="--i:6"></i><i class="pass" title="oracle: update-profile-name passed" style="--i:7"></i><i class="pass" title="oracle: newsletter-unsubscribe passed" style="--i:8"></i></span><span class="group"><i class="pass" title="oracle: remove-cart-line passed" style="--i:0"></i><i class="pass" title="oracle: guest-checkout passed" style="--i:1"></i><i class="pass" title="oracle: guest-checkout-coupon passed" style="--i:2"></i><i class="pass" title="oracle: add-default-address passed" style="--i:3"></i><i class="pass" title="oracle: write-review passed" style="--i:4"></i><i class="pass" title="oracle: cancel-order-1042 passed" style="--i:5"></i><i class="pass" title="oracle: change-recent-address passed" style="--i:6"></i><i class="pass" title="oracle: home-filter-count passed" style="--i:7"></i><i class="pass" title="oracle: last-product-sku passed" style="--i:8"></i><i class="pass" title="oracle: cheapest-garden-add-two passed" style="--i:9"></i><i class="pass" title="oracle: cancel-shipped-refusal passed" style="--i:10"></i><i class="pass" title="oracle: trail-runner-best-reviews passed" style="--i:11"></i></span><span class="group"><i class="pass" title="oracle: admin-refund-order passed" style="--i:0"></i><i class="pass" title="oracle: admin-refund-disambiguated passed" style="--i:1"></i><i class="pass" title="oracle: admin-set-stock passed" style="--i:2"></i><i class="pass" title="oracle: admin-mark-shipped passed" style="--i:3"></i><i class="pass" title="oracle: admin-hide-bad-review passed" style="--i:4"></i><i class="pass" title="oracle: admin-subscriber-count passed" style="--i:5"></i></span></div>
-    <div class="board-row" role="img" aria-label="no-op: easy 0 of 9, medium 0 of 12, hard 0 of 6"><span class="agent">no-op</span><span class="group"><i class="fail" title="noop: newsletter-subscribe failed" style="--i:0"></i><i class="fail" title="noop: search-count failed" style="--i:1"></i><i class="fail" title="noop: product-price failed" style="--i:2"></i><i class="fail" title="noop: cheapest-electronics failed" style="--i:3"></i><i class="fail" title="noop: add-to-cart failed" style="--i:4"></i><i class="fail" title="noop: order-status-after-login failed" style="--i:5"></i><i class="fail" title="noop: register-account failed" style="--i:6"></i><i class="fail" title="noop: update-profile-name failed" style="--i:7"></i><i class="fail" title="noop: newsletter-unsubscribe failed" style="--i:8"></i></span><span class="group"><i class="fail" title="noop: remove-cart-line failed" style="--i:0"></i><i class="fail" title="noop: guest-checkout failed" style="--i:1"></i><i class="fail" title="noop: guest-checkout-coupon failed" style="--i:2"></i><i class="fail" title="noop: add-default-address failed" style="--i:3"></i><i class="fail" title="noop: write-review failed" style="--i:4"></i><i class="fail" title="noop: cancel-order-1042 failed" style="--i:5"></i><i class="fail" title="noop: change-recent-address failed" style="--i:6"></i><i class="fail" title="noop: home-filter-count failed" style="--i:7"></i><i class="fail" title="noop: last-product-sku failed" style="--i:8"></i><i class="fail" title="noop: cheapest-garden-add-two failed" style="--i:9"></i><i class="fail" title="noop: cancel-shipped-refusal failed" style="--i:10"></i><i class="fail" title="noop: trail-runner-best-reviews failed" style="--i:11"></i></span><span class="group"><i class="fail" title="noop: admin-refund-order failed" style="--i:0"></i><i class="fail" title="noop: admin-refund-disambiguated failed" style="--i:1"></i><i class="fail" title="noop: admin-set-stock failed" style="--i:2"></i><i class="fail" title="noop: admin-mark-shipped failed" style="--i:3"></i><i class="fail" title="noop: admin-hide-bad-review failed" style="--i:4"></i><i class="fail" title="noop: admin-subscriber-count failed" style="--i:5"></i></span></div>
-    <div class="board-row" role="img" aria-label="random: easy 0 of 9, medium 0 of 12, hard 0 of 6"><span class="agent">random</span><span class="group"><i class="fail" title="random: newsletter-subscribe failed" style="--i:0"></i><i class="fail" title="random: search-count failed" style="--i:1"></i><i class="fail" title="random: product-price failed" style="--i:2"></i><i class="fail" title="random: cheapest-electronics failed" style="--i:3"></i><i class="fail" title="random: add-to-cart failed" style="--i:4"></i><i class="fail" title="random: order-status-after-login failed" style="--i:5"></i><i class="fail" title="random: register-account failed" style="--i:6"></i><i class="fail" title="random: update-profile-name failed" style="--i:7"></i><i class="fail" title="random: newsletter-unsubscribe failed" style="--i:8"></i></span><span class="group"><i class="fail" title="random: remove-cart-line failed" style="--i:0"></i><i class="fail" title="random: guest-checkout failed" style="--i:1"></i><i class="fail" title="random: guest-checkout-coupon failed" style="--i:2"></i><i class="fail" title="random: add-default-address failed" style="--i:3"></i><i class="fail" title="random: write-review failed" style="--i:4"></i><i class="fail" title="random: cancel-order-1042 failed" style="--i:5"></i><i class="fail" title="random: change-recent-address failed" style="--i:6"></i><i class="fail" title="random: home-filter-count failed" style="--i:7"></i><i class="fail" title="random: last-product-sku failed" style="--i:8"></i><i class="fail" title="random: cheapest-garden-add-two failed" style="--i:9"></i><i class="fail" title="random: cancel-shipped-refusal failed" style="--i:10"></i><i class="fail" title="random: trail-runner-best-reviews failed" style="--i:11"></i></span><span class="group"><i class="fail" title="random: admin-refund-order failed" style="--i:0"></i><i class="fail" title="random: admin-refund-disambiguated failed" style="--i:1"></i><i class="fail" title="random: admin-set-stock failed" style="--i:2"></i><i class="fail" title="random: admin-mark-shipped failed" style="--i:3"></i><i class="fail" title="random: admin-hide-bad-review failed" style="--i:4"></i><i class="fail" title="random: admin-subscriber-count failed" style="--i:5"></i></span></div>
-    <p class="board-foot">Oracle 27 of 27. No-op 0 of 27. Random 0 of 27. From <code>make demo</code>, seed 7.</p>
-  </figure>
+  <div class="player-col" id="replay" aria-labelledby="replay-title">
+    <h2 id="replay-title" class="eyebrow">Recorded runs, one step at a time</h2>
+    <!-- replay:start -->
+      <div class="replay" data-replay>
+        <div class="replay-tabs" role="tablist"><button type="button" role="tab" data-ep="newsletter-subscribe" aria-selected="true">Subscribe</button><button type="button" role="tab" data-ep="cancel-order-1042" aria-selected="false">Cancel</button><button type="button" role="tab" data-ep="admin-refund-disambiguated" aria-selected="false">Refund</button><button type="button" role="tab" data-ep="guest-checkout" aria-selected="false">Checkout</button></div>
+    <section class="player-episode" id="ep-newsletter-subscribe" aria-label="Easy: subscribe to the newsletter" data-total="4">
+      <p class="episode-title">Easy: subscribe to the newsletter</p>
+      <figure class="replay-view" id="newsletter-subscribe-view" aria-live="off">
+        <div class="frame">
+          <img data-n="0" src="replay/newsletter-subscribe-00.webp" width="640" height="400" loading="lazy" alt="Step 1: type “ada.new@example.test” into textbox &quot;Email address&quot; (the element is below this view)"><img data-n="1" src="replay/newsletter-subscribe-01.webp" width="640" height="400" loading="lazy" alt="Step 2: click button &quot;Subscribe&quot; (the element is below this view)" hidden><img data-n="2" src="replay/newsletter-subscribe-02.webp" width="640" height="400" loading="lazy" alt="Step 3: finish" hidden><img data-n="3" src="replay/newsletter-subscribe-03.webp" width="640" height="400" loading="lazy" alt="Step 4: end of episode: checker reads the database and the answer" hidden>
+          
+        </div>
+        <figcaption class="replay-caption">
+          <span class="step-count">Step 1 of 4</span>
+          <span class="caption-wrap"><span class="caption-text" data-n="0">type “ada.new@example.test” into textbox &quot;Email address&quot; (the element is below this view)</span><span class="caption-text" data-n="1" hidden>click button &quot;Subscribe&quot; (the element is below this view)</span><span class="caption-text" data-n="2" hidden>finish</span><span class="caption-text" data-n="3" hidden>end of episode: checker reads the database and the answer</span></span>
+          <span class="verdict" data-outcome="passed" hidden>Checker verdict: <strong>passed</strong>. no unexpected changes</span>
+        </figcaption>
+      </figure>
+      <div class="replay-controls">
+        <button type="button" data-act="restart" aria-label="Restart episode">Restart</button>
+        <button type="button" data-act="prev" aria-label="Previous step">Prev</button>
+        <button type="button" data-act="play" aria-pressed="false" aria-label="Play">Play</button>
+        <button type="button" data-act="next" aria-label="Next step">Next</button>
+        <input type="range" min="0" max="3" value="0" step="1" aria-label="Scrub through the steps" data-scrub>
+      </div>
+      <nav class="replay-steps" aria-label="Steps of Easy: subscribe to the newsletter"><button type="button" data-frame="0" aria-controls="newsletter-subscribe-view" aria-current="true" aria-label="Step 1: type “ada.new@example.test” into textbox &quot;Email address&quot; (the element is below this view)" title="type “ada.new@example.test” into textbox &quot;Email address&quot; (the element is below this view)">1</button><button type="button" data-frame="1" aria-controls="newsletter-subscribe-view" aria-current="false" aria-label="Step 2: click button &quot;Subscribe&quot; (the element is below this view)" title="click button &quot;Subscribe&quot; (the element is below this view)">2</button><button type="button" data-frame="2" aria-controls="newsletter-subscribe-view" aria-current="false" aria-label="Step 3: finish" title="finish">3</button><button type="button" data-frame="3" aria-controls="newsletter-subscribe-view" aria-current="false" aria-label="Step 4: end of episode: checker reads the database and the answer" title="end of episode: checker reads the database and the answer">4</button></nav>
+      <p class="replay-meta">3 actions, seed 7, scripted oracle, checker passed.</p>
+    </section>
+    <section class="player-episode" id="ep-cancel-order-1042" aria-label="Medium: cancel one order, leave the others" data-total="5" hidden>
+      <p class="episode-title">Medium: cancel one order, leave the others</p>
+      <figure class="replay-view" id="cancel-order-1042-view" aria-live="off">
+        <div class="frame">
+          <img data-n="0" src="replay/cancel-order-1042-00.webp" width="640" height="400" loading="lazy" alt="Step 1: click link &quot;#1042&quot;"><img data-n="1" src="replay/cancel-order-1042-01.webp" width="640" height="400" loading="lazy" alt="Step 2: click button &quot;Cancel this order&quot; (the element is below this view)" hidden><img data-n="2" src="replay/cancel-order-1042-02.webp" width="640" height="400" loading="lazy" alt="Step 3: click button &quot;Cancel order&quot;" hidden><img data-n="3" src="replay/cancel-order-1042-03.webp" width="640" height="400" loading="lazy" alt="Step 4: finish" hidden><img data-n="4" src="replay/cancel-order-1042-04.webp" width="640" height="400" loading="lazy" alt="Step 5: end of episode: checker reads the database and the answer" hidden>
+          <span class="target" data-n="0" style="left:8.83%;top:46.00%;width:3.67%;height:2.75%" hidden></span><span class="target" data-n="2" style="left:56.41%;top:55.50%;width:11.41%;height:6.25%" hidden></span>
+        </div>
+        <figcaption class="replay-caption">
+          <span class="step-count">Step 1 of 5</span>
+          <span class="caption-wrap"><span class="caption-text" data-n="0">click link &quot;#1042&quot;</span><span class="caption-text" data-n="1" hidden>click button &quot;Cancel this order&quot; (the element is below this view)</span><span class="caption-text" data-n="2" hidden>click button &quot;Cancel order&quot;</span><span class="caption-text" data-n="3" hidden>finish</span><span class="caption-text" data-n="4" hidden>end of episode: checker reads the database and the answer</span></span>
+          <span class="verdict" data-outcome="passed" hidden>Checker verdict: <strong>passed</strong>. no unexpected changes</span>
+        </figcaption>
+      </figure>
+      <div class="replay-controls">
+        <button type="button" data-act="restart" aria-label="Restart episode">Restart</button>
+        <button type="button" data-act="prev" aria-label="Previous step">Prev</button>
+        <button type="button" data-act="play" aria-pressed="false" aria-label="Play">Play</button>
+        <button type="button" data-act="next" aria-label="Next step">Next</button>
+        <input type="range" min="0" max="4" value="0" step="1" aria-label="Scrub through the steps" data-scrub>
+      </div>
+      <nav class="replay-steps" aria-label="Steps of Medium: cancel one order, leave the others"><button type="button" data-frame="0" aria-controls="cancel-order-1042-view" aria-current="true" aria-label="Step 1: click link &quot;#1042&quot;" title="click link &quot;#1042&quot;">1</button><button type="button" data-frame="1" aria-controls="cancel-order-1042-view" aria-current="false" aria-label="Step 2: click button &quot;Cancel this order&quot; (the element is below this view)" title="click button &quot;Cancel this order&quot; (the element is below this view)">2</button><button type="button" data-frame="2" aria-controls="cancel-order-1042-view" aria-current="false" aria-label="Step 3: click button &quot;Cancel order&quot;" title="click button &quot;Cancel order&quot;">3</button><button type="button" data-frame="3" aria-controls="cancel-order-1042-view" aria-current="false" aria-label="Step 4: finish" title="finish">4</button><button type="button" data-frame="4" aria-controls="cancel-order-1042-view" aria-current="false" aria-label="Step 5: end of episode: checker reads the database and the answer" title="end of episode: checker reads the database and the answer">5</button></nav>
+      <p class="replay-meta">4 actions, seed 7, scripted oracle, checker passed.</p>
+    </section>
+    <section class="player-episode" id="ep-admin-refund-disambiguated" aria-label="Hard: refund one of two customers with the same name" data-total="10" hidden>
+      <p class="episode-title">Hard: refund one of two customers with the same name</p>
+      <figure class="replay-view" id="admin-refund-disambiguated-view" aria-live="off">
+        <div class="frame">
+          <img data-n="0" src="replay/admin-refund-disambiguated-00.webp" width="640" height="400" loading="lazy" alt="Step 1: type “admin@shop.test” into textbox &quot;Email&quot;"><img data-n="1" src="replay/admin-refund-disambiguated-01.webp" width="640" height="400" loading="lazy" alt="Step 2: type “password123” into textbox &quot;Password&quot;" hidden><img data-n="2" src="replay/admin-refund-disambiguated-02.webp" width="640" height="400" loading="lazy" alt="Step 3: click button &quot;Log in&quot;" hidden><img data-n="3" src="replay/admin-refund-disambiguated-03.webp" width="640" height="400" loading="lazy" alt="Step 4: click link &quot;Admin&quot;" hidden><img data-n="4" src="replay/admin-refund-disambiguated-04.webp" width="640" height="400" loading="lazy" alt="Step 5: click link &quot;Orders&quot;" hidden><img data-n="5" src="replay/admin-refund-disambiguated-05.webp" width="640" height="400" loading="lazy" alt="Step 6: click link &quot;#1061&quot; (the element is below this view)" hidden><img data-n="6" src="replay/admin-refund-disambiguated-06.webp" width="640" height="400" loading="lazy" alt="Step 7: click button &quot;Refund order&quot;" hidden><img data-n="7" src="replay/admin-refund-disambiguated-07.webp" width="640" height="400" loading="lazy" alt="Step 8: click button &quot;Issue refund&quot;" hidden><img data-n="8" src="replay/admin-refund-disambiguated-08.webp" width="640" height="400" loading="lazy" alt="Step 9: finish" hidden><img data-n="9" src="replay/admin-refund-disambiguated-09.webp" width="640" height="400" loading="lazy" alt="Step 10: end of episode: checker reads the database and the answer" hidden>
+          <span class="target" data-n="0" style="left:7.89%;top:36.62%;width:34.53%;height:5.75%" hidden></span><span class="target" data-n="1" style="left:7.89%;top:48.12%;width:34.53%;height:5.75%" hidden></span><span class="target" data-n="2" style="left:7.89%;top:56.50%;width:7.19%;height:6.25%" hidden></span><span class="target" data-n="3" style="left:82.34%;top:7.50%;width:3.83%;height:3.00%" hidden></span><span class="target" data-n="4" style="left:16.25%;top:20.50%;width:4.06%;height:3.00%" hidden></span><span class="target" data-n="6" style="left:58.36%;top:76.62%;width:11.72%;height:6.25%" hidden></span><span class="target" data-n="7" style="left:56.64%;top:55.50%;width:11.17%;height:6.25%" hidden></span>
+        </div>
+        <figcaption class="replay-caption">
+          <span class="step-count">Step 1 of 10</span>
+          <span class="caption-wrap"><span class="caption-text" data-n="0">type “admin@shop.test” into textbox &quot;Email&quot;</span><span class="caption-text" data-n="1" hidden>type “password123” into textbox &quot;Password&quot;</span><span class="caption-text" data-n="2" hidden>click button &quot;Log in&quot;</span><span class="caption-text" data-n="3" hidden>click link &quot;Admin&quot;</span><span class="caption-text" data-n="4" hidden>click link &quot;Orders&quot;</span><span class="caption-text" data-n="5" hidden>click link &quot;#1061&quot; (the element is below this view)</span><span class="caption-text" data-n="6" hidden>click button &quot;Refund order&quot;</span><span class="caption-text" data-n="7" hidden>click button &quot;Issue refund&quot;</span><span class="caption-text" data-n="8" hidden>finish</span><span class="caption-text" data-n="9" hidden>end of episode: checker reads the database and the answer</span></span>
+          <span class="verdict" data-outcome="passed" hidden>Checker verdict: <strong>passed</strong>. no unexpected changes</span>
+        </figcaption>
+      </figure>
+      <div class="replay-controls">
+        <button type="button" data-act="restart" aria-label="Restart episode">Restart</button>
+        <button type="button" data-act="prev" aria-label="Previous step">Prev</button>
+        <button type="button" data-act="play" aria-pressed="false" aria-label="Play">Play</button>
+        <button type="button" data-act="next" aria-label="Next step">Next</button>
+        <input type="range" min="0" max="9" value="0" step="1" aria-label="Scrub through the steps" data-scrub>
+      </div>
+      <nav class="replay-steps" aria-label="Steps of Hard: refund one of two customers with the same name"><button type="button" data-frame="0" aria-controls="admin-refund-disambiguated-view" aria-current="true" aria-label="Step 1: type “admin@shop.test” into textbox &quot;Email&quot;" title="type “admin@shop.test” into textbox &quot;Email&quot;">1</button><button type="button" data-frame="1" aria-controls="admin-refund-disambiguated-view" aria-current="false" aria-label="Step 2: type “password123” into textbox &quot;Password&quot;" title="type “password123” into textbox &quot;Password&quot;">2</button><button type="button" data-frame="2" aria-controls="admin-refund-disambiguated-view" aria-current="false" aria-label="Step 3: click button &quot;Log in&quot;" title="click button &quot;Log in&quot;">3</button><button type="button" data-frame="3" aria-controls="admin-refund-disambiguated-view" aria-current="false" aria-label="Step 4: click link &quot;Admin&quot;" title="click link &quot;Admin&quot;">4</button><button type="button" data-frame="4" aria-controls="admin-refund-disambiguated-view" aria-current="false" aria-label="Step 5: click link &quot;Orders&quot;" title="click link &quot;Orders&quot;">5</button><button type="button" data-frame="5" aria-controls="admin-refund-disambiguated-view" aria-current="false" aria-label="Step 6: click link &quot;#1061&quot; (the element is below this view)" title="click link &quot;#1061&quot; (the element is below this view)">6</button><button type="button" data-frame="6" aria-controls="admin-refund-disambiguated-view" aria-current="false" aria-label="Step 7: click button &quot;Refund order&quot;" title="click button &quot;Refund order&quot;">7</button><button type="button" data-frame="7" aria-controls="admin-refund-disambiguated-view" aria-current="false" aria-label="Step 8: click button &quot;Issue refund&quot;" title="click button &quot;Issue refund&quot;">8</button><button type="button" data-frame="8" aria-controls="admin-refund-disambiguated-view" aria-current="false" aria-label="Step 9: finish" title="finish">9</button><button type="button" data-frame="9" aria-controls="admin-refund-disambiguated-view" aria-current="false" aria-label="Step 10: end of episode: checker reads the database and the answer" title="end of episode: checker reads the database and the answer">10</button></nav>
+      <p class="replay-meta">9 actions, seed 7, scripted oracle, checker passed.</p>
+    </section>
+    <section class="player-episode" id="ep-guest-checkout" aria-label="Medium: guest checkout with a test card" data-total="18" hidden>
+      <p class="episode-title">Medium: guest checkout with a test card</p>
+      <figure class="replay-view" id="guest-checkout-view" aria-live="off">
+        <div class="frame">
+          <img data-n="0" src="replay/guest-checkout-00.webp" width="640" height="400" loading="lazy" alt="Step 1: type “Ceramic Pour-Over Set” into textbox &quot;Search products&quot;"><img data-n="1" src="replay/guest-checkout-01.webp" width="640" height="400" loading="lazy" alt="Step 2: click link &quot;Ceramic Pour-Over Set&quot;" hidden><img data-n="2" src="replay/guest-checkout-02.webp" width="640" height="400" loading="lazy" alt="Step 3: click button &quot;Add to cart&quot;" hidden><img data-n="3" src="replay/guest-checkout-03.webp" width="640" height="400" loading="lazy" alt="Step 4: click link &quot;Cart 1&quot;" hidden><img data-n="4" src="replay/guest-checkout-04.webp" width="640" height="400" loading="lazy" alt="Step 5: click link &quot;Go to checkout&quot;" hidden><img data-n="5" src="replay/guest-checkout-05.webp" width="640" height="400" loading="lazy" alt="Step 6: type “sam.carter@example.test” into textbox &quot;Email for order updates&quot;" hidden><img data-n="6" src="replay/guest-checkout-06.webp" width="640" height="400" loading="lazy" alt="Step 7: type “Sam Carter” into textbox &quot;Full name&quot;" hidden><img data-n="7" src="replay/guest-checkout-07.webp" width="640" height="400" loading="lazy" alt="Step 8: type “14 Orchard Lane” into textbox &quot;Street address&quot;" hidden><img data-n="8" src="replay/guest-checkout-08.webp" width="640" height="400" loading="lazy" alt="Step 9: type “Reading” into textbox &quot;City&quot;" hidden><img data-n="9" src="replay/guest-checkout-09.webp" width="640" height="400" loading="lazy" alt="Step 10: type “RG1 2AB” into textbox &quot;Postcode&quot;" hidden><img data-n="10" src="replay/guest-checkout-10.webp" width="640" height="400" loading="lazy" alt="Step 11: click button &quot;Continue to payment&quot; (the element is below this view)" hidden><img data-n="11" src="replay/guest-checkout-11.webp" width="640" height="400" loading="lazy" alt="Step 12: type “4242 4242 4242 4242” into textbox &quot;Card number&quot;" hidden><img data-n="12" src="replay/guest-checkout-12.webp" width="640" height="400" loading="lazy" alt="Step 13: type “12/30” into textbox &quot;Expiry (MM/YY)&quot;" hidden><img data-n="13" src="replay/guest-checkout-13.webp" width="640" height="400" loading="lazy" alt="Step 14: type “123” into textbox &quot;Security code&quot;" hidden><img data-n="14" src="replay/guest-checkout-14.webp" width="640" height="400" loading="lazy" alt="Step 15: click button &quot;Review order&quot;" hidden><img data-n="15" src="replay/guest-checkout-15.webp" width="640" height="400" loading="lazy" alt="Step 16: click button &quot;Place order for $46.99&quot;" hidden><img data-n="16" src="replay/guest-checkout-16.webp" width="640" height="400" loading="lazy" alt="Step 17: finish" hidden><img data-n="17" src="replay/guest-checkout-17.webp" width="640" height="400" loading="lazy" alt="Step 18: end of episode: checker reads the database and the answer" hidden>
+          <span class="target" data-n="0" style="left:25.78%;top:6.12%;width:33.05%;height:5.75%" hidden></span><span class="target" data-n="1" style="left:38.36%;top:33.75%;width:17.11%;height:3.50%" hidden></span><span class="target" data-n="2" style="left:52.03%;top:65.38%;width:10.39%;height:6.25%" hidden></span><span class="target" data-n="3" style="left:82.50%;top:7.50%;width:4.61%;height:3.00%" hidden></span><span class="target" data-n="4" style="left:79.14%;top:62.62%;width:12.97%;height:6.25%" hidden></span><span class="target" data-n="5" style="left:7.89%;top:43.00%;width:47.19%;height:5.75%" hidden></span><span class="target" data-n="6" style="left:7.89%;top:54.62%;width:47.19%;height:5.75%" hidden></span><span class="target" data-n="7" style="left:7.89%;top:68.25%;width:47.19%;height:5.75%" hidden></span><span class="target" data-n="8" style="left:7.89%;top:79.88%;width:22.89%;height:5.75%" hidden></span><span class="target" data-n="9" style="left:32.19%;top:79.88%;width:22.89%;height:5.75%" hidden></span><span class="target" data-n="11" style="left:7.89%;top:45.12%;width:47.19%;height:5.75%" hidden></span><span class="target" data-n="12" style="left:7.89%;top:56.75%;width:22.89%;height:5.75%" hidden></span><span class="target" data-n="13" style="left:32.19%;top:56.75%;width:22.89%;height:5.75%" hidden></span><span class="target" data-n="14" style="left:7.89%;top:90.62%;width:11.88%;height:6.25%" hidden></span><span class="target" data-n="15" style="left:58.36%;top:72.00%;width:17.73%;height:6.25%" hidden></span>
+        </div>
+        <figcaption class="replay-caption">
+          <span class="step-count">Step 1 of 18</span>
+          <span class="caption-wrap"><span class="caption-text" data-n="0">type “Ceramic Pour-Over Set” into textbox &quot;Search products&quot;</span><span class="caption-text" data-n="1" hidden>click link &quot;Ceramic Pour-Over Set&quot;</span><span class="caption-text" data-n="2" hidden>click button &quot;Add to cart&quot;</span><span class="caption-text" data-n="3" hidden>click link &quot;Cart 1&quot;</span><span class="caption-text" data-n="4" hidden>click link &quot;Go to checkout&quot;</span><span class="caption-text" data-n="5" hidden>type “sam.carter@example.test” into textbox &quot;Email for order updates&quot;</span><span class="caption-text" data-n="6" hidden>type “Sam Carter” into textbox &quot;Full name&quot;</span><span class="caption-text" data-n="7" hidden>type “14 Orchard Lane” into textbox &quot;Street address&quot;</span><span class="caption-text" data-n="8" hidden>type “Reading” into textbox &quot;City&quot;</span><span class="caption-text" data-n="9" hidden>type “RG1 2AB” into textbox &quot;Postcode&quot;</span><span class="caption-text" data-n="10" hidden>click button &quot;Continue to payment&quot; (the element is below this view)</span><span class="caption-text" data-n="11" hidden>type “4242 4242 4242 4242” into textbox &quot;Card number&quot;</span><span class="caption-text" data-n="12" hidden>type “12/30” into textbox &quot;Expiry (MM/YY)&quot;</span><span class="caption-text" data-n="13" hidden>type “123” into textbox &quot;Security code&quot;</span><span class="caption-text" data-n="14" hidden>click button &quot;Review order&quot;</span><span class="caption-text" data-n="15" hidden>click button &quot;Place order for $46.99&quot;</span><span class="caption-text" data-n="16" hidden>finish</span><span class="caption-text" data-n="17" hidden>end of episode: checker reads the database and the answer</span></span>
+          <span class="verdict" data-outcome="passed" hidden>Checker verdict: <strong>passed</strong>. no unexpected changes</span>
+        </figcaption>
+      </figure>
+      <div class="replay-controls">
+        <button type="button" data-act="restart" aria-label="Restart episode">Restart</button>
+        <button type="button" data-act="prev" aria-label="Previous step">Prev</button>
+        <button type="button" data-act="play" aria-pressed="false" aria-label="Play">Play</button>
+        <button type="button" data-act="next" aria-label="Next step">Next</button>
+        <input type="range" min="0" max="17" value="0" step="1" aria-label="Scrub through the steps" data-scrub>
+      </div>
+      <nav class="replay-steps" aria-label="Steps of Medium: guest checkout with a test card"><button type="button" data-frame="0" aria-controls="guest-checkout-view" aria-current="true" aria-label="Step 1: type “Ceramic Pour-Over Set” into textbox &quot;Search products&quot;" title="type “Ceramic Pour-Over Set” into textbox &quot;Search products&quot;">1</button><button type="button" data-frame="1" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 2: click link &quot;Ceramic Pour-Over Set&quot;" title="click link &quot;Ceramic Pour-Over Set&quot;">2</button><button type="button" data-frame="2" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 3: click button &quot;Add to cart&quot;" title="click button &quot;Add to cart&quot;">3</button><button type="button" data-frame="3" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 4: click link &quot;Cart 1&quot;" title="click link &quot;Cart 1&quot;">4</button><button type="button" data-frame="4" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 5: click link &quot;Go to checkout&quot;" title="click link &quot;Go to checkout&quot;">5</button><button type="button" data-frame="5" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 6: type “sam.carter@example.test” into textbox &quot;Email for order updates&quot;" title="type “sam.carter@example.test” into textbox &quot;Email for order updates&quot;">6</button><button type="button" data-frame="6" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 7: type “Sam Carter” into textbox &quot;Full name&quot;" title="type “Sam Carter” into textbox &quot;Full name&quot;">7</button><button type="button" data-frame="7" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 8: type “14 Orchard Lane” into textbox &quot;Street address&quot;" title="type “14 Orchard Lane” into textbox &quot;Street address&quot;">8</button><button type="button" data-frame="8" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 9: type “Reading” into textbox &quot;City&quot;" title="type “Reading” into textbox &quot;City&quot;">9</button><button type="button" data-frame="9" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 10: type “RG1 2AB” into textbox &quot;Postcode&quot;" title="type “RG1 2AB” into textbox &quot;Postcode&quot;">10</button><button type="button" data-frame="10" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 11: click button &quot;Continue to payment&quot; (the element is below this view)" title="click button &quot;Continue to payment&quot; (the element is below this view)">11</button><button type="button" data-frame="11" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 12: type “4242 4242 4242 4242” into textbox &quot;Card number&quot;" title="type “4242 4242 4242 4242” into textbox &quot;Card number&quot;">12</button><button type="button" data-frame="12" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 13: type “12/30” into textbox &quot;Expiry (MM/YY)&quot;" title="type “12/30” into textbox &quot;Expiry (MM/YY)&quot;">13</button><button type="button" data-frame="13" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 14: type “123” into textbox &quot;Security code&quot;" title="type “123” into textbox &quot;Security code&quot;">14</button><button type="button" data-frame="14" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 15: click button &quot;Review order&quot;" title="click button &quot;Review order&quot;">15</button><button type="button" data-frame="15" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 16: click button &quot;Place order for $46.99&quot;" title="click button &quot;Place order for $46.99&quot;">16</button><button type="button" data-frame="16" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 17: finish" title="finish">17</button><button type="button" data-frame="17" aria-controls="guest-checkout-view" aria-current="false" aria-label="Step 18: end of episode: checker reads the database and the answer" title="end of episode: checker reads the database and the answer">18</button></nav>
+      <p class="replay-meta">17 actions, seed 7, scripted oracle, checker passed.</p>
+    </section>
+      </div>
+    <!-- replay:end -->
+  </div>
 </section>
 
 <section class="section" id="how">
   <div class="wrap two-col">
     <div>
-      <h2>A checker is a function over two database states</h2>
-      <p>The hard problem in browser-agent evaluation is not the page. It is deciding whether the agent did the job without also doing something else. A transcript can claim success that the store never recorded, and an answer can be right by luck.</p>
-      <p>Each ShopGym checker compares a snapshot taken after task setup with the live database at the end, and then checks the answer. <code>assert_only</code> fails any row that changed outside the task's allowance. Cancelling order 1043 instead of 1042 fails, even if 1042 was cancelled too.</p>
-      <p>Expected values are computed from the snapshot, using the same search query the storefront uses, so answers are never hard-coded. Answer matching is tolerant on purpose. "3", "three" and "3 of 12" all count as 3, while "not shipped" never counts as shipped, and each rule has its own tests.</p>
+      <h2>The checker compares two database states</h2>
+      <p>The hard part of browser-agent evaluation is not the page. It is deciding whether the agent did the job without also doing something else. A transcript can claim success that the store never recorded, and an answer can be right by luck.</p>
+      <p>Each checker compares a snapshot taken after task setup with the live database at the end, then checks the answer. <code>assert_only</code> fails any row that changed outside the task's allowance. Cancelling order 1043 instead of 1042 fails, even if 1042 was cancelled too.</p>
+      <p>Expected values come from the snapshot, using the same search query the storefront uses, so answers are never hard-coded. Answer matching is tolerant on purpose: "3", "three" and "3 of 12" all count as 3, while "not shipped" never counts as shipped.</p>
     </div>
     <div class="code-stack">
       <p class="caption">The task file: an instruction, a checker and its parameters.</p>
@@ -96,7 +192,6 @@ def cancel_order(ctx, number, **_):
           <path d="M0 0 L10 5 L0 10 z" class="arrowhead"/>
         </marker>
       </defs>
-      <!-- shop -->
       <g class="box shop">
         <rect x="20" y="30" width="250" height="150" rx="2"/>
         <text x="40" y="60" class="box-title">Shop</text>
@@ -104,7 +199,6 @@ def cancel_order(ctx, number, **_):
         <text x="40" y="102" class="box-body">SQLite schema, seeded data</text>
         <text x="40" y="130" class="box-note">Cookie sg_episode picks the file</text>
       </g>
-      <!-- episode copies -->
       <g class="box data">
         <rect x="20" y="230" width="250" height="130" rx="2"/>
         <text x="40" y="260" class="box-title">Episode databases</text>
@@ -112,7 +206,6 @@ def cancel_order(ctx, number, **_):
         <text x="40" y="302" class="box-body">plus a post-setup snapshot</text>
         <text x="40" y="330" class="box-note">Deterministic seed: same bytes</text>
       </g>
-      <!-- env -->
       <g class="box env">
         <rect x="335" y="30" width="270" height="150" rx="2"/>
         <text x="355" y="60" class="box-title">ShopGym env</text>
@@ -121,7 +214,6 @@ def cancel_order(ctx, number, **_):
         <text x="355" y="120" class="box-body">Validates actions before use</text>
         <text x="355" y="148" class="box-note">Screenshot and text observation</text>
       </g>
-      <!-- tasks -->
       <g class="box tasks">
         <rect x="335" y="230" width="270" height="130" rx="2"/>
         <text x="355" y="260" class="box-title">Tasks</text>
@@ -129,7 +221,6 @@ def cancel_order(ctx, number, **_):
         <text x="355" y="302" class="box-body">Checkers, setup hooks, oracles</text>
         <text x="355" y="330" class="box-note">Checker and oracle share params</text>
       </g>
-      <!-- agents -->
       <g class="box agents">
         <rect x="680" y="30" width="260" height="150" rx="2"/>
         <text x="700" y="60" class="box-title">Agents</text>
@@ -138,7 +229,6 @@ def cancel_order(ctx, number, **_):
         <text x="700" y="120" class="box-body">LLM agent: tested, not run live</text>
         <text x="700" y="148" class="box-note">Acts only through the UI</text>
       </g>
-      <!-- harness -->
       <g class="box harness">
         <rect x="680" y="230" width="260" height="130" rx="2"/>
         <text x="700" y="260" class="box-title">Harness</text>
@@ -156,201 +246,102 @@ def cancel_order(ctx, number, **_):
   </div>
 </section>
 
-<section class="section" id="replay">
-  <div class="wrap">
-    <h2>Four real oracle episodes</h2>
-    <p class="lede-small">These are screenshots taken during <code>make demo</code>, downscaled to 640 px. The oracle is a scripted generator that reads the page like a user, so this replay shows that each task can be finished through the UI. It is not a model's behaviour.</p>
-    <!-- replay:start -->
-  <div class="replay" data-replay>
-    <div class="replay-tabs" role="tablist"><button type="button" role="tab" data-ep="newsletter-subscribe" aria-selected="true">Subscribe</button><button type="button" role="tab" data-ep="cancel-order-1042" aria-selected="false">Cancel</button><button type="button" role="tab" data-ep="admin-refund-disambiguated" aria-selected="false">Refund</button><button type="button" role="tab" data-ep="guest-checkout" aria-selected="false">Checkout</button></div>
-    <section class="replay-episode" id="ep-newsletter-subscribe" aria-label="Easy: subscribe to the newsletter" >
-      <p class="replay-meta">Easy: subscribe to the newsletter. Checker verdict: <strong>passed</strong>
-        in 3 actions. Seed 7, scripted oracle.</p>
-      <div class="replay-grid">
-        <ol class="replay-steps" aria-label="Actions">
-        <li><button type="button" data-frame="0" aria-controls="newsletter-subscribe-view" aria-current="true"><span class="step-n">1</span> type “ada.new@example.test” into textbox &quot;Email address&quot;</button></li>
-        <li><button type="button" data-frame="1" aria-controls="newsletter-subscribe-view" aria-current="false"><span class="step-n">2</span> click button &quot;Subscribe&quot;</button></li>
-        <li><button type="button" data-frame="2" aria-controls="newsletter-subscribe-view" aria-current="false"><span class="step-n">3</span> finish</button></li>
-        <li><button type="button" data-frame="3" aria-controls="newsletter-subscribe-view" aria-current="false"><span class="step-n">4</span> end of episode: checker reads the database and the answer</button></li>
-        </ol>
-        <figure class="replay-view" id="newsletter-subscribe-view" aria-live="polite">
-      <img data-n="0" src="replay/newsletter-subscribe-00.webp" width="640" height="400" loading="lazy" alt="Step 1: type “ada.new@example.test” into textbox &quot;Email address&quot;">
-      <img data-n="1" src="replay/newsletter-subscribe-01.webp" width="640" height="400" loading="lazy" alt="Step 2: click button &quot;Subscribe&quot;" hidden>
-      <img data-n="2" src="replay/newsletter-subscribe-02.webp" width="640" height="400" loading="lazy" alt="Step 3: finish" hidden>
-      <img data-n="3" src="replay/newsletter-subscribe-03.webp" width="640" height="400" loading="lazy" alt="Step 4: end of episode: checker reads the database and the answer" hidden>
-        </figure>
-      </div>
-    </section>
-    <section class="replay-episode" id="ep-cancel-order-1042" aria-label="Medium: cancel one order, leave the others" hidden>
-      <p class="replay-meta">Medium: cancel one order, leave the others. Checker verdict: <strong>passed</strong>
-        in 4 actions. Seed 7, scripted oracle.</p>
-      <div class="replay-grid">
-        <ol class="replay-steps" aria-label="Actions">
-        <li><button type="button" data-frame="0" aria-controls="cancel-order-1042-view" aria-current="true"><span class="step-n">1</span> click link &quot;#1042&quot;</button></li>
-        <li><button type="button" data-frame="1" aria-controls="cancel-order-1042-view" aria-current="false"><span class="step-n">2</span> click button &quot;Cancel this order&quot;</button></li>
-        <li><button type="button" data-frame="2" aria-controls="cancel-order-1042-view" aria-current="false"><span class="step-n">3</span> click button &quot;Cancel order&quot;</button></li>
-        <li><button type="button" data-frame="3" aria-controls="cancel-order-1042-view" aria-current="false"><span class="step-n">4</span> finish</button></li>
-        <li><button type="button" data-frame="4" aria-controls="cancel-order-1042-view" aria-current="false"><span class="step-n">5</span> end of episode: checker reads the database and the answer</button></li>
-        </ol>
-        <figure class="replay-view" id="cancel-order-1042-view" aria-live="polite">
-      <img data-n="0" src="replay/cancel-order-1042-00.webp" width="640" height="400" loading="lazy" alt="Step 1: click link &quot;#1042&quot;">
-      <img data-n="1" src="replay/cancel-order-1042-01.webp" width="640" height="400" loading="lazy" alt="Step 2: click button &quot;Cancel this order&quot;" hidden>
-      <img data-n="2" src="replay/cancel-order-1042-02.webp" width="640" height="400" loading="lazy" alt="Step 3: click button &quot;Cancel order&quot;" hidden>
-      <img data-n="3" src="replay/cancel-order-1042-03.webp" width="640" height="400" loading="lazy" alt="Step 4: finish" hidden>
-      <img data-n="4" src="replay/cancel-order-1042-04.webp" width="640" height="400" loading="lazy" alt="Step 5: end of episode: checker reads the database and the answer" hidden>
-        </figure>
-      </div>
-    </section>
-    <section class="replay-episode" id="ep-admin-refund-disambiguated" aria-label="Hard: refund one of two customers with the same name" hidden>
-      <p class="replay-meta">Hard: refund one of two customers with the same name. Checker verdict: <strong>passed</strong>
-        in 9 actions. Seed 7, scripted oracle.</p>
-      <div class="replay-grid">
-        <ol class="replay-steps" aria-label="Actions">
-        <li><button type="button" data-frame="0" aria-controls="admin-refund-disambiguated-view" aria-current="true"><span class="step-n">1</span> type “admin@shop.test” into textbox &quot;Email&quot;</button></li>
-        <li><button type="button" data-frame="1" aria-controls="admin-refund-disambiguated-view" aria-current="false"><span class="step-n">2</span> type “password123” into textbox &quot;Password&quot;</button></li>
-        <li><button type="button" data-frame="2" aria-controls="admin-refund-disambiguated-view" aria-current="false"><span class="step-n">3</span> click button &quot;Log in&quot;</button></li>
-        <li><button type="button" data-frame="3" aria-controls="admin-refund-disambiguated-view" aria-current="false"><span class="step-n">4</span> click link &quot;Admin&quot;</button></li>
-        <li><button type="button" data-frame="4" aria-controls="admin-refund-disambiguated-view" aria-current="false"><span class="step-n">5</span> click link &quot;Orders&quot;</button></li>
-        <li><button type="button" data-frame="5" aria-controls="admin-refund-disambiguated-view" aria-current="false"><span class="step-n">6</span> click link &quot;#1061&quot;</button></li>
-        <li><button type="button" data-frame="6" aria-controls="admin-refund-disambiguated-view" aria-current="false"><span class="step-n">7</span> click button &quot;Refund order&quot;</button></li>
-        <li><button type="button" data-frame="7" aria-controls="admin-refund-disambiguated-view" aria-current="false"><span class="step-n">8</span> click button &quot;Issue refund&quot;</button></li>
-        <li><button type="button" data-frame="8" aria-controls="admin-refund-disambiguated-view" aria-current="false"><span class="step-n">9</span> finish</button></li>
-        <li><button type="button" data-frame="9" aria-controls="admin-refund-disambiguated-view" aria-current="false"><span class="step-n">10</span> end of episode: checker reads the database and the answer</button></li>
-        </ol>
-        <figure class="replay-view" id="admin-refund-disambiguated-view" aria-live="polite">
-      <img data-n="0" src="replay/admin-refund-disambiguated-00.webp" width="640" height="400" loading="lazy" alt="Step 1: type “admin@shop.test” into textbox &quot;Email&quot;">
-      <img data-n="1" src="replay/admin-refund-disambiguated-01.webp" width="640" height="400" loading="lazy" alt="Step 2: type “password123” into textbox &quot;Password&quot;" hidden>
-      <img data-n="2" src="replay/admin-refund-disambiguated-02.webp" width="640" height="400" loading="lazy" alt="Step 3: click button &quot;Log in&quot;" hidden>
-      <img data-n="3" src="replay/admin-refund-disambiguated-03.webp" width="640" height="400" loading="lazy" alt="Step 4: click link &quot;Admin&quot;" hidden>
-      <img data-n="4" src="replay/admin-refund-disambiguated-04.webp" width="640" height="400" loading="lazy" alt="Step 5: click link &quot;Orders&quot;" hidden>
-      <img data-n="5" src="replay/admin-refund-disambiguated-05.webp" width="640" height="400" loading="lazy" alt="Step 6: click link &quot;#1061&quot;" hidden>
-      <img data-n="6" src="replay/admin-refund-disambiguated-06.webp" width="640" height="400" loading="lazy" alt="Step 7: click button &quot;Refund order&quot;" hidden>
-      <img data-n="7" src="replay/admin-refund-disambiguated-07.webp" width="640" height="400" loading="lazy" alt="Step 8: click button &quot;Issue refund&quot;" hidden>
-      <img data-n="8" src="replay/admin-refund-disambiguated-08.webp" width="640" height="400" loading="lazy" alt="Step 9: finish" hidden>
-      <img data-n="9" src="replay/admin-refund-disambiguated-09.webp" width="640" height="400" loading="lazy" alt="Step 10: end of episode: checker reads the database and the answer" hidden>
-        </figure>
-      </div>
-    </section>
-    <section class="replay-episode" id="ep-guest-checkout" aria-label="Medium: guest checkout with a test card" hidden>
-      <p class="replay-meta">Medium: guest checkout with a test card. Checker verdict: <strong>passed</strong>
-        in 17 actions. Seed 7, scripted oracle.</p>
-      <div class="replay-grid">
-        <ol class="replay-steps" aria-label="Actions">
-        <li><button type="button" data-frame="0" aria-controls="guest-checkout-view" aria-current="true"><span class="step-n">1</span> type “Ceramic Pour-Over Set” into textbox &quot;Search products&quot;</button></li>
-        <li><button type="button" data-frame="1" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">2</span> click link &quot;Ceramic Pour-Over Set&quot;</button></li>
-        <li><button type="button" data-frame="2" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">3</span> click button &quot;Add to cart&quot;</button></li>
-        <li><button type="button" data-frame="3" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">4</span> click link &quot;Cart 1&quot;</button></li>
-        <li><button type="button" data-frame="4" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">5</span> click link &quot;Go to checkout&quot;</button></li>
-        <li><button type="button" data-frame="5" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">6</span> type “sam.carter@example.test” into textbox &quot;Email for order updates&quot;</button></li>
-        <li><button type="button" data-frame="6" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">7</span> type “Sam Carter” into textbox &quot;Full name&quot;</button></li>
-        <li><button type="button" data-frame="7" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">8</span> type “14 Orchard Lane” into textbox &quot;Street address&quot;</button></li>
-        <li><button type="button" data-frame="8" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">9</span> type “Reading” into textbox &quot;City&quot;</button></li>
-        <li><button type="button" data-frame="9" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">10</span> type “RG1 2AB” into textbox &quot;Postcode&quot;</button></li>
-        <li><button type="button" data-frame="10" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">11</span> click button &quot;Continue to payment&quot;</button></li>
-        <li><button type="button" data-frame="11" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">12</span> type “4242 4242 4242 4242” into textbox &quot;Card number&quot;</button></li>
-        <li><button type="button" data-frame="12" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">13</span> type “12/30” into textbox &quot;Expiry (MM/YY)&quot;</button></li>
-        <li><button type="button" data-frame="13" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">14</span> type “123” into textbox &quot;Security code&quot;</button></li>
-        <li><button type="button" data-frame="14" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">15</span> click button &quot;Review order&quot;</button></li>
-        <li><button type="button" data-frame="15" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">16</span> click button &quot;Place order for $46.99&quot;</button></li>
-        <li><button type="button" data-frame="16" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">17</span> finish</button></li>
-        <li><button type="button" data-frame="17" aria-controls="guest-checkout-view" aria-current="false"><span class="step-n">18</span> end of episode: checker reads the database and the answer</button></li>
-        </ol>
-        <figure class="replay-view" id="guest-checkout-view" aria-live="polite">
-      <img data-n="0" src="replay/guest-checkout-00.webp" width="640" height="400" loading="lazy" alt="Step 1: type “Ceramic Pour-Over Set” into textbox &quot;Search products&quot;">
-      <img data-n="1" src="replay/guest-checkout-01.webp" width="640" height="400" loading="lazy" alt="Step 2: click link &quot;Ceramic Pour-Over Set&quot;" hidden>
-      <img data-n="2" src="replay/guest-checkout-02.webp" width="640" height="400" loading="lazy" alt="Step 3: click button &quot;Add to cart&quot;" hidden>
-      <img data-n="3" src="replay/guest-checkout-03.webp" width="640" height="400" loading="lazy" alt="Step 4: click link &quot;Cart 1&quot;" hidden>
-      <img data-n="4" src="replay/guest-checkout-04.webp" width="640" height="400" loading="lazy" alt="Step 5: click link &quot;Go to checkout&quot;" hidden>
-      <img data-n="5" src="replay/guest-checkout-05.webp" width="640" height="400" loading="lazy" alt="Step 6: type “sam.carter@example.test” into textbox &quot;Email for order updates&quot;" hidden>
-      <img data-n="6" src="replay/guest-checkout-06.webp" width="640" height="400" loading="lazy" alt="Step 7: type “Sam Carter” into textbox &quot;Full name&quot;" hidden>
-      <img data-n="7" src="replay/guest-checkout-07.webp" width="640" height="400" loading="lazy" alt="Step 8: type “14 Orchard Lane” into textbox &quot;Street address&quot;" hidden>
-      <img data-n="8" src="replay/guest-checkout-08.webp" width="640" height="400" loading="lazy" alt="Step 9: type “Reading” into textbox &quot;City&quot;" hidden>
-      <img data-n="9" src="replay/guest-checkout-09.webp" width="640" height="400" loading="lazy" alt="Step 10: type “RG1 2AB” into textbox &quot;Postcode&quot;" hidden>
-      <img data-n="10" src="replay/guest-checkout-10.webp" width="640" height="400" loading="lazy" alt="Step 11: click button &quot;Continue to payment&quot;" hidden>
-      <img data-n="11" src="replay/guest-checkout-11.webp" width="640" height="400" loading="lazy" alt="Step 12: type “4242 4242 4242 4242” into textbox &quot;Card number&quot;" hidden>
-      <img data-n="12" src="replay/guest-checkout-12.webp" width="640" height="400" loading="lazy" alt="Step 13: type “12/30” into textbox &quot;Expiry (MM/YY)&quot;" hidden>
-      <img data-n="13" src="replay/guest-checkout-13.webp" width="640" height="400" loading="lazy" alt="Step 14: type “123” into textbox &quot;Security code&quot;" hidden>
-      <img data-n="14" src="replay/guest-checkout-14.webp" width="640" height="400" loading="lazy" alt="Step 15: click button &quot;Review order&quot;" hidden>
-      <img data-n="15" src="replay/guest-checkout-15.webp" width="640" height="400" loading="lazy" alt="Step 16: click button &quot;Place order for $46.99&quot;" hidden>
-      <img data-n="16" src="replay/guest-checkout-16.webp" width="640" height="400" loading="lazy" alt="Step 17: finish" hidden>
-      <img data-n="17" src="replay/guest-checkout-17.webp" width="640" height="400" loading="lazy" alt="Step 18: end of episode: checker reads the database and the answer" hidden>
-        </figure>
-      </div>
-    </section>
-  </div>
-  <!-- replay:end -->
-  </div>
-</section>
-
 <section class="section" id="results">
-  <div class="wrap two-col">
+  <div class="wrap results">
     <div>
       <h2>What the demo prints</h2>
       <p>This is the table <code>make demo</code> printed, unedited. The three agents run over all 27 tasks, seed 7, headless, with no keys.</p>
-      <p>The oracle solves all 27, through the UI, with a mean of 6.3 actions. The no-op agent and the random agent score 0 of 27, which is the floor the checkers have to clear.</p>
-      <p>Task by task, the oracle passes all 27 and the no-op and random agents fail all 27.</p>
+      <p>The oracle solves all 27 through the UI, in a mean of 6.3 actions. The no-op and random agents score 0 of 27, which is the floor the checkers have to clear.</p>
+      <div class="table-wrap">
+        <table class="scores">
+          <caption>Score table from <code>make demo</code></caption>
+          <thead><tr><th scope="col">agent</th><th scope="col">easy</th><th scope="col">medium</th><th scope="col">hard</th><th scope="col">overall</th><th scope="col">steps</th><th scope="col">crashes</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">noop</th><td>0/9</td><td>0/12</td><td>0/6</td><td>0/27 0%</td><td>1.0</td><td>0</td></tr>
+            <tr class="win"><th scope="row">oracle</th><td>9/9</td><td>12/12</td><td>6/6</td><td>27/27 100%</td><td>6.3</td><td>0</td></tr>
+            <tr><th scope="row">random</th><td>0/9</td><td>0/12</td><td>0/6</td><td>0/27 0%</td><td>28.0</td><td>0</td></tr>
+          </tbody>
+        </table>
+        <p class="caveat">All three rows are scripted. No language model was run for this page.</p>
+      </div>
     </div>
-    <div class="table-wrap">
-      <table class="scores">
-        <caption>Score table from <code>make demo</code></caption>
-        <thead><tr><th scope="col">agent</th><th scope="col">easy</th><th scope="col">medium</th><th scope="col">hard</th><th scope="col">overall</th><th scope="col">steps</th><th scope="col">crashes</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">noop</th><td>0/9</td><td>0/12</td><td>0/6</td><td>0/27 0%</td><td>1.0</td><td>0</td></tr>
-          <tr class="win"><th scope="row">oracle</th><td>9/9</td><td>12/12</td><td>6/6</td><td>27/27 100%</td><td>6.3</td><td>0</td></tr>
-          <tr><th scope="row">random</th><td>0/9</td><td>0/12</td><td>0/6</td><td>0/27 0%</td><td>28.0</td><td>0</td></tr>
-        </tbody>
-      </table>
-      <p class="caveat">All three rows are scripted. No language model was run for this page.</p>
+    <div class="board-col">
+  <figure class="board" aria-labelledby="board-title">
+    <figcaption id="board-title">Every task, every agent. One cell per task, grouped by tier.</figcaption>
+    <div class="board-head" aria-hidden="true"><span></span><span>easy 9</span><span>medium 12</span><span>hard 6</span></div>
+        <div class="board-row" role="img" aria-label="oracle: easy 9 of 9, medium 12 of 12, hard 6 of 6"><span class="agent">oracle</span><span class="group"><i class="pass" title="oracle: newsletter-subscribe passed" style="--i:0"></i><i class="pass" title="oracle: search-count passed" style="--i:1"></i><i class="pass" title="oracle: product-price passed" style="--i:2"></i><i class="pass" title="oracle: cheapest-electronics passed" style="--i:3"></i><i class="pass" title="oracle: add-to-cart passed" style="--i:4"></i><i class="pass" title="oracle: order-status-after-login passed" style="--i:5"></i><i class="pass" title="oracle: register-account passed" style="--i:6"></i><i class="pass" title="oracle: update-profile-name passed" style="--i:7"></i><i class="pass" title="oracle: newsletter-unsubscribe passed" style="--i:8"></i></span><span class="group"><i class="pass" title="oracle: remove-cart-line passed" style="--i:0"></i><i class="pass" title="oracle: guest-checkout passed" style="--i:1"></i><i class="pass" title="oracle: guest-checkout-coupon passed" style="--i:2"></i><i class="pass" title="oracle: add-default-address passed" style="--i:3"></i><i class="pass" title="oracle: write-review passed" style="--i:4"></i><i class="pass" title="oracle: cancel-order-1042 passed" style="--i:5"></i><i class="pass" title="oracle: change-recent-address passed" style="--i:6"></i><i class="pass" title="oracle: home-filter-count passed" style="--i:7"></i><i class="pass" title="oracle: last-product-sku passed" style="--i:8"></i><i class="pass" title="oracle: cheapest-garden-add-two passed" style="--i:9"></i><i class="pass" title="oracle: cancel-shipped-refusal passed" style="--i:10"></i><i class="pass" title="oracle: trail-runner-best-reviews passed" style="--i:11"></i></span><span class="group"><i class="pass" title="oracle: admin-refund-order passed" style="--i:0"></i><i class="pass" title="oracle: admin-refund-disambiguated passed" style="--i:1"></i><i class="pass" title="oracle: admin-set-stock passed" style="--i:2"></i><i class="pass" title="oracle: admin-mark-shipped passed" style="--i:3"></i><i class="pass" title="oracle: admin-hide-bad-review passed" style="--i:4"></i><i class="pass" title="oracle: admin-subscriber-count passed" style="--i:5"></i></span></div>
+    <div class="board-row" role="img" aria-label="no-op: easy 0 of 9, medium 0 of 12, hard 0 of 6"><span class="agent">no-op</span><span class="group"><i class="fail" title="noop: newsletter-subscribe failed" style="--i:0"></i><i class="fail" title="noop: search-count failed" style="--i:1"></i><i class="fail" title="noop: product-price failed" style="--i:2"></i><i class="fail" title="noop: cheapest-electronics failed" style="--i:3"></i><i class="fail" title="noop: add-to-cart failed" style="--i:4"></i><i class="fail" title="noop: order-status-after-login failed" style="--i:5"></i><i class="fail" title="noop: register-account failed" style="--i:6"></i><i class="fail" title="noop: update-profile-name failed" style="--i:7"></i><i class="fail" title="noop: newsletter-unsubscribe failed" style="--i:8"></i></span><span class="group"><i class="fail" title="noop: remove-cart-line failed" style="--i:0"></i><i class="fail" title="noop: guest-checkout failed" style="--i:1"></i><i class="fail" title="noop: guest-checkout-coupon failed" style="--i:2"></i><i class="fail" title="noop: add-default-address failed" style="--i:3"></i><i class="fail" title="noop: write-review failed" style="--i:4"></i><i class="fail" title="noop: cancel-order-1042 failed" style="--i:5"></i><i class="fail" title="noop: change-recent-address failed" style="--i:6"></i><i class="fail" title="noop: home-filter-count failed" style="--i:7"></i><i class="fail" title="noop: last-product-sku failed" style="--i:8"></i><i class="fail" title="noop: cheapest-garden-add-two failed" style="--i:9"></i><i class="fail" title="noop: cancel-shipped-refusal failed" style="--i:10"></i><i class="fail" title="noop: trail-runner-best-reviews failed" style="--i:11"></i></span><span class="group"><i class="fail" title="noop: admin-refund-order failed" style="--i:0"></i><i class="fail" title="noop: admin-refund-disambiguated failed" style="--i:1"></i><i class="fail" title="noop: admin-set-stock failed" style="--i:2"></i><i class="fail" title="noop: admin-mark-shipped failed" style="--i:3"></i><i class="fail" title="noop: admin-hide-bad-review failed" style="--i:4"></i><i class="fail" title="noop: admin-subscriber-count failed" style="--i:5"></i></span></div>
+    <div class="board-row" role="img" aria-label="random: easy 0 of 9, medium 0 of 12, hard 0 of 6"><span class="agent">random</span><span class="group"><i class="fail" title="random: newsletter-subscribe failed" style="--i:0"></i><i class="fail" title="random: search-count failed" style="--i:1"></i><i class="fail" title="random: product-price failed" style="--i:2"></i><i class="fail" title="random: cheapest-electronics failed" style="--i:3"></i><i class="fail" title="random: add-to-cart failed" style="--i:4"></i><i class="fail" title="random: order-status-after-login failed" style="--i:5"></i><i class="fail" title="random: register-account failed" style="--i:6"></i><i class="fail" title="random: update-profile-name failed" style="--i:7"></i><i class="fail" title="random: newsletter-unsubscribe failed" style="--i:8"></i></span><span class="group"><i class="fail" title="random: remove-cart-line failed" style="--i:0"></i><i class="fail" title="random: guest-checkout failed" style="--i:1"></i><i class="fail" title="random: guest-checkout-coupon failed" style="--i:2"></i><i class="fail" title="random: add-default-address failed" style="--i:3"></i><i class="fail" title="random: write-review failed" style="--i:4"></i><i class="fail" title="random: cancel-order-1042 failed" style="--i:5"></i><i class="fail" title="random: change-recent-address failed" style="--i:6"></i><i class="fail" title="random: home-filter-count failed" style="--i:7"></i><i class="fail" title="random: last-product-sku failed" style="--i:8"></i><i class="fail" title="random: cheapest-garden-add-two failed" style="--i:9"></i><i class="fail" title="random: cancel-shipped-refusal failed" style="--i:10"></i><i class="fail" title="random: trail-runner-best-reviews failed" style="--i:11"></i></span><span class="group"><i class="fail" title="random: admin-refund-order failed" style="--i:0"></i><i class="fail" title="random: admin-refund-disambiguated failed" style="--i:1"></i><i class="fail" title="random: admin-set-stock failed" style="--i:2"></i><i class="fail" title="random: admin-mark-shipped failed" style="--i:3"></i><i class="fail" title="random: admin-hide-bad-review failed" style="--i:4"></i><i class="fail" title="random: admin-subscriber-count failed" style="--i:5"></i></span></div>
+    <p class="board-foot">Oracle 27 of 27. No-op 0 of 27. Random 0 of 27. From <code>make demo</code>, seed 7.</p>
+  </figure>
     </div>
   </div>
 </section>
 
 <section class="section" id="tasks">
   <div class="wrap">
-    <h2>27 tasks in three tiers</h2>
-    <p class="lede-small">Easy tasks are one page. Medium tasks are multi-step flows with traps. Hard tasks cover admin work, two customers with the same name, and data seeded before the agent starts.</p>
-        <details class="tier" open>
-      <summary><h3>Easy</h3> <span class="count">9 tasks</span></summary>
-      <ul class="task-list">
-        <li><code>newsletter-subscribe</code> Subscribe to the newsletter using the email address ada.new@example.test.</li>
-        <li><code>search-count</code> How many products match the search &#x27;lamp&#x27;? Answer with just the number.</li>
-        <li><code>product-price</code> What is the price of the Field Notes Atlas? Answer with the dollar amount.</li>
-        <li><code>cheapest-electronics</code> Find the cheapest electronics item that is in stock. Answer with its exact product name.</li>
-        <li><code>add-to-cart</code> Add 2 Trail Runner Pro to the cart.</li>
-        <li><code>order-status-after-login</code> Log in as grace@shop.test with password password123, then tell me the status of order #1051. Answer with the status word only.</li>
-        <li><code>register-account</code> Create an account with the name Nadia Rahman, the email nadia.rahman@example.test and the password correct-horse-9.</li>
-        <li><code>update-profile-name</code> Change your display name to Grace Brewster Hopper. Keep your email and password as they are.</li>
-        <li><code>newsletter-unsubscribe</code> Unsubscribe your account from the newsletter.</li>
-      </ul>
-    </details>
-    <details class="tier" >
-      <summary><h3>Medium</h3> <span class="count">12 tasks</span></summary>
-      <ul class="task-list">
-        <li><code>remove-cart-line</code> Remove the Canvas Tote from your cart. Leave everything else in the cart.</li>
-        <li><code>guest-checkout</code> Buy one Ceramic Pour-Over Set and ship it to Sam Carter, 14 Orchard Lane, Reading, RG1 2AB, United Kingdom. Use the email sam.carter@example.test. Pay with the test card 4242 4242 4242 4242, expiry 12/30, code 123. Place the order.</li>
-        <li><code>guest-checkout-coupon</code> Buy 2 Field Notes Atlas and ship them to Lee Park, 3 Quay Street, Bristol, BS1 4XE, United Kingdom. Use the email lee.park@example.test and the coupon code SPRING10. Pay with the test card 4242 4242 4242 4242, expiry 12/30, code 123. Place the order.</li>
-        <li><code>add-default-address</code> Add a new address labelled Office for Alan Turing: 22 Park Row, Sheffield, S1 2GU, United Kingdom. Make it your default address.</li>
-        <li><code>write-review</code> Write a 4-star review of the Brass Desk Lamp titled &#x27;Bright and quiet&#x27;. The text should say the lamp is bright and quiet to use.</li>
-        <li><code>cancel-order-1042</code> Cancel order #1042. Do not change any other order.</li>
-        <li><code>change-recent-address</code> Change the shipping address on your most recent order to Ada Lovelace, 5 Market Street, Bath, BA1 1AA, United Kingdom.</li>
-        <li><code>home-filter-count</code> How many Home products cost $100 or less and have an average rating of 3 stars or more? Answer with just the number.</li>
-        <li><code>last-product-sku</code> The catalogue is sorted by name. Open the last product on the last page and answer with its SKU.</li>
-        <li><code>cheapest-garden-add-two</code> Find the cheapest garden item that is in stock and add 2 of them to your cart.</li>
-        <li><code>cancel-shipped-refusal</code> Cancel order #1044. If it cannot be cancelled, do not change it and answer &#x27;not cancellable&#x27;.</li>
-        <li><code>trail-runner-best-reviews</code> How many reviews of the Trail Runner Pro mention the word &#x27;best&#x27;? Count every review page. Answer with just the number.</li>
-      </ul>
-    </details>
-    <details class="tier" >
-      <summary><h3>Hard</h3> <span class="count">6 tasks</span></summary>
-      <ul class="task-list">
-        <li><code>admin-refund-order</code> Log in as admin@shop.test with password password123. Then refund order #1051 in full, the order placed by Grace Hopper.</li>
-        <li><code>admin-refund-disambiguated</code> Log in as admin@shop.test with password password123. Two customer accounts are named Hedy Lamarr. Refund the most recent delivered order of hedy@shop.test only. Do not refund the other account&#x27;s orders.</li>
-        <li><code>admin-set-stock</code> Log in as admin@shop.test with password password123. Set the stock of the 30m Garden Hose (SKU GAR-HOSE-30) to 25 units.</li>
-        <li><code>admin-mark-shipped</code> Log in as admin@shop.test with password password123. Mark order #1043 as shipped with tracking number 1Z84E0120399990001.</li>
-        <li><code>admin-hide-bad-review</code> Log in as admin@shop.test with password password123. Hide the 1-star review titled &#x27;Stitching gave out after a week&#x27; on the Trail Runner Pro. Leave the other reviews visible.</li>
-        <li><code>admin-subscriber-count</code> Log in as admin@shop.test with password password123. How many newsletter subscribers are active? Answer with just the number.</li>
-      </ul>
-    </details>
+    <div class="section-head">
+      <h2>27 tasks in three tiers</h2>
+      <p class="lede-small">Easy tasks are one page. Medium tasks are multi-step flows with traps. Hard tasks cover admin work, two customers with the same name, and data seeded before the agent starts.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier">
+        <h3>Easy <span class="count">9 tasks</span></h3>
+        <ul class="task-list">
+          <li><code>newsletter-subscribe</code> Subscribe to the newsletter using the email address ada.new@example.test.</li>
+          <li><code>search-count</code> How many products match the search &#x27;lamp&#x27;? Answer with just the number.</li>
+          <li><code>product-price</code> What is the price of the Field Notes Atlas? Answer with the dollar amount.</li>
+          <li><code>cheapest-electronics</code> Find the cheapest electronics item that is in stock. Answer with its exact product name.</li>
+          <li><code>add-to-cart</code> Add 2 Trail Runner Pro to the cart.</li>
+          <li><code>order-status-after-login</code> Log in as grace@shop.test with password password123, then tell me the status of order #1051. Answer with the status word only.</li>
+          <li><code>register-account</code> Create an account with the name Nadia Rahman, the email nadia.rahman@example.test and the password correct-horse-9.</li>
+          <li><code>update-profile-name</code> Change your display name to Grace Brewster Hopper. Keep your email and password as they are.</li>
+          <li><code>newsletter-unsubscribe</code> Unsubscribe your account from the newsletter.</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <h3>Medium <span class="count">12 tasks</span></h3>
+        <ul class="task-list">
+          <li><code>remove-cart-line</code> Remove the Canvas Tote from your cart. Leave everything else in the cart.</li>
+          <li><code>guest-checkout</code> Buy one Ceramic Pour-Over Set and ship it to Sam Carter, 14 Orchard Lane, Reading, RG1 2AB, United Kingdom. Use the email sam.carter@example.test. Pay with the test card 4242 4242 4242 4242, expiry 12/30, code 123. Place the order.</li>
+          <li><code>guest-checkout-coupon</code> Buy 2 Field Notes Atlas and ship them to Lee Park, 3 Quay Street, Bristol, BS1 4XE, United Kingdom. Use the email lee.park@example.test and the coupon code SPRING10. Pay with the test card 4242 4242 4242 4242, expiry 12/30, code 123. Place the order.</li>
+          <li><code>add-default-address</code> Add a new address labelled Office for Alan Turing: 22 Park Row, Sheffield, S1 2GU, United Kingdom. Make it your default address.</li>
+          <li><code>write-review</code> Write a 4-star review of the Brass Desk Lamp titled &#x27;Bright and quiet&#x27;. The text should say the lamp is bright and quiet to use.</li>
+          <li><code>cancel-order-1042</code> Cancel order #1042. Do not change any other order.</li>
+          <li><code>change-recent-address</code> Change the shipping address on your most recent order to Ada Lovelace, 5 Market Street, Bath, BA1 1AA, United Kingdom.</li>
+          <li><code>home-filter-count</code> How many Home products cost $100 or less and have an average rating of 3 stars or more? Answer with just the number.</li>
+          <li><code>last-product-sku</code> The catalogue is sorted by name. Open the last product on the last page and answer with its SKU.</li>
+          <li><code>cheapest-garden-add-two</code> Find the cheapest garden item that is in stock and add 2 of them to your cart.</li>
+          <li><code>cancel-shipped-refusal</code> Cancel order #1044. If it cannot be cancelled, do not change it and answer &#x27;not cancellable&#x27;.</li>
+          <li><code>trail-runner-best-reviews</code> How many reviews of the Trail Runner Pro mention the word &#x27;best&#x27;? Count every review page. Answer with just the number.</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <h3>Hard <span class="count">6 tasks</span></h3>
+        <ul class="task-list">
+          <li><code>admin-refund-order</code> Log in as admin@shop.test with password password123. Then refund order #1051 in full, the order placed by Grace Hopper.</li>
+          <li><code>admin-refund-disambiguated</code> Log in as admin@shop.test with password password123. Two customer accounts are named Hedy Lamarr. Refund the most recent delivered order of hedy@shop.test only. Do not refund the other account&#x27;s orders.</li>
+          <li><code>admin-set-stock</code> Log in as admin@shop.test with password password123. Set the stock of the 30m Garden Hose (SKU GAR-HOSE-30) to 25 units.</li>
+          <li><code>admin-mark-shipped</code> Log in as admin@shop.test with password password123. Mark order #1043 as shipped with tracking number 1Z84E0120399990001.</li>
+          <li><code>admin-hide-bad-review</code> Log in as admin@shop.test with password password123. Hide the 1-star review titled &#x27;Stitching gave out after a week&#x27; on the Trail Runner Pro. Leave the other reviews visible.</li>
+          <li><code>admin-subscriber-count</code> Log in as admin@shop.test with password password123. How many newsletter subscribers are active? Answer with just the number.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="code">
+  <div class="wrap">
+    <h2>Where to look in the code</h2>
+    <p class="lede-small">Five files hold the hard parts. Each link goes to the file on GitHub.</p>
+    <ol class="code-map">
+      <li><a href="https://github.com/codealisha99/shopgym/blob/main/src/shopgym/tasks/checkers.py"><code>tasks/checkers.py</code></a><span>The checkers and <code>assert_only</code>. A row changed outside the allowance fails the task, even when the right row also changed.</span></li>
+      <li><a href="https://github.com/codealisha99/shopgym/blob/main/src/shopgym/env/observe.py"><code>env/observe.py</code></a><span>The DOM walker that tags interactive elements e1, e2, ... in document order. It also records each element's box, which the replay uses to highlight the target.</span></li>
+      <li><a href="https://github.com/codealisha99/shopgym/blob/main/src/shopgym/tasks/answers.py"><code>tasks/answers.py</code></a><span>Tolerant answer matching. "3", "three" and "3 of 12" all count as 3. "not shipped" never counts as shipped.</span></li>
+      <li><a href="https://github.com/codealisha99/shopgym/blob/main/src/shopgym/env/episodes.py"><code>env/episodes.py</code></a><span>One seeded database copy per episode, routed by the <code>sg_episode</code> cookie, so parallel episodes cannot see each other.</span></li>
+      <li><a href="https://github.com/codealisha99/shopgym/blob/main/src/shopgym/agents/oracle.py"><code>agents/oracle.py</code></a><span>The scripted oracle. It finds elements by role and name, the way a user would, and proves each task can be finished through the UI.</span></li>
+    </ol>
   </div>
 </section>
 
@@ -358,11 +349,12 @@ def cancel_order(ctx, number, **_):
   <div class="wrap two-col">
     <div>
       <h2>Run it</h2>
-      <p>The keyless demo needs Python 3.12 and uv. It boots the shop on port 4200, runs the three agents over all tasks, and writes <code>runs/demo/viewer.html</code>, which is one self-contained file.</p>
-      <p>A real model is not part of the demo. The LLM agent takes an Anthropic key, or any OpenAI-compatible server. Its providers are covered by tests with a scripted provider, and no live model has been called from this project.</p>
+      <p>The keyless demo needs Python 3.12 and uv. It boots the shop on port 4200, runs the three agents over all tasks, and writes <code>runs/demo/viewer.html</code>, one self-contained file.</p>
+      <p>A real model is not part of the demo. The LLM agent takes an Anthropic key, or any OpenAI-compatible server. Its providers are covered by tests with a scripted provider. No live model has been called from this project.</p>
     </div>
     <div class="code-stack">
-      <pre><code>make install     # uv sync + Chromium for Playwright
+      <div class="copyable">
+        <pre><code id="run-commands">make install     # uv sync + Chromium for Playwright
 make demo        # oracle + noop + random, all 27 tasks, headless
 
 make test        # all tests, browser tests included
@@ -372,6 +364,8 @@ uv run shopgym serve            # the shop on http://127.0.0.1:4200
 uv run shopgym tasks            # list tasks
 uv run shopgym report runs/demo
 uv run shopgym view runs/demo --out viewer.html</code></pre>
+        <button type="button" class="copy" data-copy="run-commands">Copy</button>
+      </div>
     </div>
   </div>
 </section>
@@ -380,7 +374,7 @@ uv run shopgym view runs/demo --out viewer.html</code></pre>
   <div class="wrap two-col">
     <div>
       <h2>Limitations</h2>
-      <p>These are the gaps that matter for judging the work, stated plainly.</p>
+      <p>These are the gaps that matter for judging the work, stated plainly. There is no live demo: the shop runs locally with one command.</p>
     </div>
     <ul class="limits">
       <li><strong>No live model run.</strong> The LLM agent and its providers are tested with a scripted provider only. The first real run should be a few tasks, checked by hand.</li>

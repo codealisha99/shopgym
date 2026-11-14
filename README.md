@@ -12,6 +12,8 @@ the database state and the agent's answer, and that also penalises unrelated sid
 has a scripted oracle that solves it through the UI, and two baselines (no-op and random) that must score
 zero. The whole loop runs headless with no API keys.
 
+![Final frame of a scripted guest checkout, from make demo](docs/replay.webp)
+
 ## What is hard about this, and how it is solved
 
 - **The site has to be hard, not just big.** The shop has multi-step checkout with validation (Luhn card
