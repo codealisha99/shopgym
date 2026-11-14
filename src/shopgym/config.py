@@ -16,6 +16,17 @@ REVIEW_PAGE_SIZE = 5
 SHIPPING_CENTS = 499
 FREE_SHIPPING_THRESHOLD_CENTS = 5000
 DEMO_PASSWORD = "password123"
+# Public deployment limits (see app/live.py and app/limits.py). Used only when SHOPGYM_LIVE=1.
+LIVE_MAX_COPIES = 200
+LIVE_IDLE_MINUTES = 30
+LIVE_NEW_COPIES_PER_HOUR_PER_IP = 10
+LIVE_WRITES_PER_MINUTE_PER_IP = 60
+MAX_BODY_BYTES = 16 * 1024
+
+
+def live_mode() -> bool:
+    """True for the public deployment: per-visitor database copies, limits, capacity cap."""
+    return os.environ.get("SHOPGYM_LIVE", "") == "1"
 
 
 def data_dir() -> Path:

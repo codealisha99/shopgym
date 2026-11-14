@@ -27,6 +27,9 @@ p { margin: 0 0 1em; max-width: var(--measure); }
 .muted { color: var(--muted); }
 .wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
 
+/* evaluation banner */
+.env-banner { margin: 0; padding: 0.35rem 1.25rem; background: var(--signal); color: var(--signal-ink); font-size: 0.85rem; text-align: center; letter-spacing: 0.01em; }
+
 /* header */
 header.site { background: var(--spruce); color: var(--paper); }
 header.site .wrap { display: flex; align-items: center; gap: 1.5rem; padding-top: 0.9rem; padding-bottom: 0.9rem; flex-wrap: wrap; }

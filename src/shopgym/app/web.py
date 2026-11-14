@@ -13,8 +13,11 @@ from pathlib import Path
 from starlette.responses import HTMLResponse, RedirectResponse, Response
 from starlette.templating import Jinja2Templates
 
+from starlette.responses import PlainTextResponse
+
 from shopgym.app.db import connect
 from shopgym.app.seed import build_database
+from shopgym.app.limits import client_ip
 from shopgym.config import EPISODE_COOKIE, SEED_DEFAULT, SESSION_COOKIE
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
@@ -41,6 +44,21 @@ def episode_db_path(data_dir: Path, episode: str | None) -> Path:
     return default
 
 
+def live_episode(request) -> tuple[str | None, Path | None]:
+    """Public deployment: the visitor's own copy, creating one on first contact.
+
+    Returns (new cookie value or None, database path or None when the server is full).
+    """
+    registry = request.app.state.live
+    db = registry.touch(request.cookies.get(EPISODE_COOKIE))
+    if db is not None:
+        return None, db
+    token = registry.create(client_ip(request.scope))
+    if token is None:
+        return None, None
+    return token, registry.touch(token)
+
+
 def _load_user(conn, token: str):
     return conn.execute(
         "SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token = ?", (token,)
@@ -61,7 +79,16 @@ def page(handler):
 
     @functools.wraps(handler)
     async def wrapper(request):
-        conn = connect(episode_db_path(request.app.state.data_dir, request.cookies.get(EPISODE_COOKIE)))
+        new_episode = None
+        if getattr(request.app.state, "live", None) is not None:
+            new_episode, db_path = live_episode(request)
+            if db_path is None:
+                return PlainTextResponse(
+                    "ShopGym is full right now, or this address has started too many sessions. "
+                    "Try again in a few minutes.", status_code=503, headers={"Retry-After": "300"})
+        else:
+            db_path = episode_db_path(request.app.state.data_dir, request.cookies.get(EPISODE_COOKIE))
+        conn = connect(db_path)
         try:
             token, is_new = _ensure_session(conn, request.cookies.get(SESSION_COOKIE))
             request.state.conn = conn
@@ -71,6 +98,8 @@ def page(handler):
             conn.commit()
             if is_new:
                 response.set_cookie(SESSION_COOKIE, token, httponly=True, samesite="lax", path="/")
+            if new_episode:
+                response.set_cookie(EPISODE_COOKIE, new_episode, httponly=True, samesite="lax", path="/")
             return response
         finally:
             conn.close()
