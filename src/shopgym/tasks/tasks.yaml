@@ -1,0 +1,242 @@
+# Declarative task file. Each task names a checker (state + answer), an optional setup hook that
+# runs before the initial snapshot, and params shared by the checker and the scripted oracle.
+# Tiers: easy (one page, read or simple write), medium (multi-step flows, traps), hard (admin,
+# disambiguation, pagination, setup-seeded data).
+default_seed: 7
+tasks:
+  # ---- easy ------------------------------------------------------------------------------
+  - id: newsletter-subscribe
+    tier: easy
+    start_url: /
+    instruction: "Subscribe to the newsletter using the email address ada.new@example.test."
+    checker: newsletter_subscribe
+    params: {email: ada.new@example.test}
+
+  - id: search-count
+    tier: easy
+    start_url: /products
+    instruction: "How many products match the search 'lamp'? Answer with just the number."
+    checker: search_count
+    params: {query: lamp}
+
+  - id: product-price
+    tier: easy
+    start_url: /
+    instruction: "What is the price of the Field Notes Atlas? Answer with the dollar amount."
+    checker: product_price
+    params: {sku: BOK-ATL-01}
+
+  - id: cheapest-electronics
+    tier: easy
+    start_url: /products
+    instruction: "Find the cheapest electronics item that is in stock. Answer with its exact product name."
+    checker: cheapest_in_stock
+    params: {category: electronics}
+
+  - id: add-to-cart
+    tier: easy
+    start_url: /products
+    instruction: "Add 2 Trail Runner Pro to the cart."
+    checker: cart_equals
+    params: {lines: {CLO-TRP-01: 2}}
+
+  - id: order-status-after-login
+    tier: easy
+    start_url: /login
+    instruction: "Log in as grace@shop.test with password password123, then tell me the status of order #1051. Answer with the status word only."
+    checker: order_status_answer
+    params: {number: 1051}
+
+  - id: register-account
+    tier: easy
+    start_url: /register
+    instruction: "Create an account with the name Nadia Rahman, the email nadia.rahman@example.test and the password correct-horse-9."
+    checker: register_account
+    params: {email: nadia.rahman@example.test, name: Nadia Rahman, password: correct-horse-9}
+
+  - id: update-profile-name
+    tier: easy
+    start_url: /account/profile
+    setup: login_as
+    setup_params: {email: grace@shop.test}
+    instruction: "Change your display name to Grace Brewster Hopper. Keep your email and password as they are."
+    checker: update_profile_name
+    params: {email: grace@shop.test, name: Grace Brewster Hopper, password: password123}
+
+  - id: newsletter-unsubscribe
+    tier: easy
+    start_url: /account
+    setup: login_as
+    setup_params: {email: ada@shop.test}
+    instruction: "Unsubscribe your account from the newsletter."
+    checker: newsletter_unsubscribe
+    params: {email: ada@shop.test}
+
+  # ---- medium ----------------------------------------------------------------------------
+  - id: remove-cart-line
+    tier: medium
+    start_url: /cart
+    setup: cart
+    setup_params: {items: [[CLO-TOT-02, 1], [CLO-TRP-01, 1]]}
+    instruction: "Remove the Canvas Tote from your cart. Leave everything else in the cart."
+    checker: cart_equals
+    params: {lines: {CLO-TRP-01: 1}}
+
+  - id: guest-checkout
+    tier: medium
+    start_url: /products
+    max_steps: 35
+    instruction: >-
+      Buy one Ceramic Pour-Over Set and ship it to Sam Carter, 14 Orchard Lane, Reading, RG1 2AB,
+      United Kingdom. Use the email sam.carter@example.test. Pay with the test card 4242 4242 4242 4242,
+      expiry 12/30, code 123. Place the order.
+    checker: guest_checkout
+    params: {sku: HOM-PO-01, qty: 1, email: sam.carter@example.test, full_name: Sam Carter,
+             line1: 14 Orchard Lane, city: Reading, postcode: RG1 2AB}
+
+  - id: guest-checkout-coupon
+    tier: medium
+    start_url: /products
+    max_steps: 35
+    instruction: >-
+      Buy 2 Field Notes Atlas and ship them to Lee Park, 3 Quay Street, Bristol, BS1 4XE, United Kingdom.
+      Use the email lee.park@example.test and the coupon code SPRING10. Pay with the test card
+      4242 4242 4242 4242, expiry 12/30, code 123. Place the order.
+    checker: guest_checkout
+    params: {sku: BOK-ATL-01, qty: 2, email: lee.park@example.test, full_name: Lee Park,
+             line1: 3 Quay Street, city: Bristol, postcode: BS1 4XE, coupon: SPRING10, percent: 10}
+
+  - id: add-default-address
+    tier: medium
+    start_url: /account/addresses
+    setup: login_as
+    setup_params: {email: alan@shop.test}
+    instruction: >-
+      Add a new address labelled Office for Alan Turing: 22 Park Row, Sheffield, S1 2GU, United Kingdom.
+      Make it your default address.
+    checker: add_address
+    params: {email: alan@shop.test, label: Office, full_name: Alan Turing, line1: 22 Park Row,
+             city: Sheffield, postcode: S1 2GU}
+
+  - id: write-review
+    tier: medium
+    start_url: /products/HOM-LMP-02
+    setup: login_as
+    setup_params: {email: alan@shop.test}
+    instruction: "Write a 4-star review of the Brass Desk Lamp titled 'Bright and quiet'. The text should say the lamp is bright and quiet to use."
+    checker: write_review
+    params: {sku: HOM-LMP-02, email: alan@shop.test, rating: 4, must_contain: quiet}
+
+  - id: cancel-order-1042
+    tier: medium
+    start_url: /account/orders
+    setup: login_as
+    setup_params: {email: ada@shop.test}
+    instruction: "Cancel order #1042. Do not change any other order."
+    checker: cancel_order
+    params: {number: 1042}
+
+  - id: change-recent-address
+    tier: medium
+    start_url: /account/orders
+    setup: login_as
+    setup_params: {email: ada@shop.test}
+    instruction: >-
+      Change the shipping address on your most recent order to Ada Lovelace, 5 Market Street,
+      Bath, BA1 1AA, United Kingdom.
+    checker: change_shipping_address
+    params: {number: 1043, full_name: Ada Lovelace, line1: 5 Market Street, city: Bath, postcode: BA1 1AA}
+
+  - id: home-filter-count
+    tier: medium
+    start_url: /products
+    instruction: "How many Home products cost $100 or less and have an average rating of 3 stars or more? Answer with just the number."
+    checker: multi_filter_count
+    params: {category: home, max_dollars: 100, min_rating: 3.0}
+
+  - id: last-product-sku
+    tier: medium
+    start_url: /products
+    instruction: "The catalogue is sorted by name. Open the last product on the last page and answer with its SKU."
+    checker: sku_answer
+    params: {name: Wireless Earbuds Lite}
+
+  - id: cheapest-garden-add-two
+    tier: medium
+    start_url: /products
+    instruction: "Find the cheapest garden item that is in stock and add 2 of them to your cart."
+    checker: cheapest_add_to_cart
+    params: {category: garden, qty: 2}
+
+  - id: cancel-shipped-refusal
+    tier: medium
+    start_url: /account/orders
+    setup: login_as
+    setup_params: {email: ada@shop.test}
+    instruction: "Cancel order #1044. If it cannot be cancelled, do not change it and answer 'not cancellable'."
+    checker: cancel_refusal
+    params: {number: 1044}
+
+  - id: trail-runner-best-reviews
+    tier: medium
+    start_url: /products/CLO-TRP-01
+    instruction: "How many reviews of the Trail Runner Pro mention the word 'best'? Count every review page. Answer with just the number."
+    checker: count_best_reviews
+    params: {sku: CLO-TRP-01, word: best}
+
+  # ---- hard ------------------------------------------------------------------------------
+  - id: admin-refund-order
+    tier: hard
+    start_url: /login
+    max_steps: 35
+    instruction: "Log in as admin@shop.test with password password123. Then refund order #1051 in full, the order placed by Grace Hopper."
+    checker: admin_refund_order
+    params: {number: 1051}
+
+  - id: admin-refund-disambiguated
+    tier: hard
+    start_url: /login
+    max_steps: 35
+    instruction: >-
+      Log in as admin@shop.test with password password123. Two customer accounts are named Hedy Lamarr.
+      Refund the most recent delivered order of hedy@shop.test only. Do not refund the other account's orders.
+    checker: admin_refund_order
+    params: {number: 1061}
+
+  - id: admin-set-stock
+    tier: hard
+    start_url: /login
+    max_steps: 35
+    instruction: "Log in as admin@shop.test with password password123. Set the stock of the 30m Garden Hose (SKU GAR-HOSE-30) to 25 units."
+    checker: admin_set_stock
+    params: {sku: GAR-HOSE-30, stock: 25}
+
+  - id: admin-mark-shipped
+    tier: hard
+    start_url: /login
+    max_steps: 35
+    instruction: "Log in as admin@shop.test with password password123. Mark order #1043 as shipped with tracking number 1Z84E0120399990001."
+    checker: admin_mark_shipped
+    params: {number: 1043, tracking: 1Z84E0120399990001}
+
+  - id: admin-hide-bad-review
+    tier: hard
+    start_url: /login
+    max_steps: 35
+    setup: review
+    setup_params: {sku: CLO-TRP-01, email: grace@shop.test, rating: 1,
+                   title: Stitching gave out after a week,
+                   body: Two weeks in and the heel stitching failed. Not worth the money.}
+    instruction: >-
+      Log in as admin@shop.test with password password123. Hide the 1-star review titled
+      'Stitching gave out after a week' on the Trail Runner Pro. Leave the other reviews visible.
+    checker: admin_hide_review
+    params: {title: Stitching gave out after a week}
+
+  - id: admin-subscriber-count
+    tier: hard
+    start_url: /login
+    max_steps: 35
+    instruction: "Log in as admin@shop.test with password password123. How many newsletter subscribers are active? Answer with just the number."
+    checker: admin_subscriber_count
+    params: {}
