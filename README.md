@@ -1,5 +1,8 @@
 # ShopGym: a computer-use evaluation environment for browser agents
 
+- **Landing page:** https://shopgym-site.vercel.app (static, with a replay of real oracle episodes)
+- **Live demo:** none yet. The Railway project could not be created because the account's trial has expired and needs a plan. Run the store locally with `make serve`.
+
 ShopGym is a self-hosted online shop (storefront, customer accounts, checkout, and an admin panel) plus
 a Gymnasium-style environment that lets an agent act on it through screenshots, a text view of the page
 with stable element ids, and browser actions. It ships 27 tasks. Each task has a checker that reads
@@ -129,13 +132,25 @@ episodes with a `result.json` on disk are skipped unless you pass `--force`.
 
 ## Verification
 
-- `make test`: 150 tests, all passing. Line coverage of `src/` is 86%.
+- `make test`: 207 tests, all passing (including the browser tests and the oracle-solves-every-task test).
 - Per-task: every checker fails a no-op, and each task's oracle passes (`test_oracle_solves_every_task`).
   Deliberate wrong actions fail: cancelling order 1043 instead of 1042, refunding the other Hedy Lamarr's
   order, a cart with the wrong quantity, and an unrelated write in the newsletter task.
 - Determinism: the same seed gives the same observation text, element table and screenshot bytes, and
   the same seeded database file bytes.
 - Isolation: four parallel episodes each add a different product, and each database holds only its own.
+
+## Public deployment (optional)
+
+`SHOPGYM_LIVE=1` turns the server into a shared public instance. Each visitor gets their own database copy
+(capped at 200 copies, expired after 30 idle minutes, 10 new copies per hour per address), writes are
+rate limited to 60 per minute per address, and request bodies are capped at 16 KB. The `Dockerfile` builds
+this web-only image (no Playwright, no Chromium, no LLM SDK, about 75 MB). Run it with one process, because
+the rate limits are in memory:
+
+```bash
+docker build -t shopgym-web . && docker run -p 4200:4200 shopgym-web
+```
 
 ## Limitations and next steps
 
