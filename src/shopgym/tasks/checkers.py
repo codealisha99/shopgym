@@ -15,6 +15,8 @@ from typing import Any
 
 from shopgym.app.catalog import search_products
 from shopgym.app.db import connect, table_rows, verify_password
+from shopgym.tasks.answers import (count_answer, money_answer, product_name_given, refusal_given,
+                                    sku_given, status_matches)
 
 IGNORED_TABLES = {"sessions", "order_events"}  # session bookkeeping and audit logs
 NATURAL_KEYS = {"orders": "number", "products": "sku", "users": "email", "categories": "slug",
@@ -96,14 +98,7 @@ def assert_only(ctx: CheckContext, allowed: dict) -> Verdict:
 
 
 def _number_answer(answer: str | None) -> int | None:
-    if answer is None:
-        return None
-    numbers = re.findall(r"\d+", answer)
-    return int(numbers[0]) if len(numbers) == 1 else None
-
-
-def _text_answer(answer: str | None) -> str:
-    return (answer or "").strip().strip(".").strip().lower()
+    return count_answer(answer)
 
 
 def _cart_lines(conn: sqlite3.Connection) -> dict[str, int]:
@@ -135,16 +130,19 @@ def search_count(ctx: CheckContext, query: str, **_: Any) -> Verdict:
 @checker("product_price")
 def product_price(ctx: CheckContext, sku: str, **_: Any) -> Verdict:
     row = _ro(ctx.initial).execute("SELECT price_cents FROM products WHERE sku = ?", (sku,)).fetchone()
-    numbers = [float(n) for n in re.findall(r"\d+(?:\.\d+)?", ctx.answer or "")]
+    amount = money_answer(ctx.answer)
     expected = row["price_cents"] / 100
-    ok = len(numbers) == 1 and abs(numbers[0] - expected) < 0.005
+    ok = amount is not None and abs(amount - expected) < 0.005
     return _expect(ok, "price matches", f"expected {expected:.2f}, answered {ctx.answer!r}")
 
 
 @checker("cheapest_in_stock")
 def cheapest_in_stock(ctx: CheckContext, category: str, **_: Any) -> Verdict:
-    names = [n.lower() for n in _cheapest_in_stock(_ro(ctx.initial), category)]
-    return _expect(_text_answer(ctx.answer) in names, "cheapest name", f"expected one of {names}")
+    conn = _ro(ctx.initial)
+    names = _cheapest_in_stock(conn, category)
+    all_names = [r["name"] for r in conn.execute("SELECT name FROM products")]
+    ok = product_name_given(ctx.answer, set(names), all_names)
+    return _expect(ok, "cheapest name", f"expected one of {names}")
 
 
 @checker("count_best_reviews")
@@ -159,16 +157,31 @@ def count_best_reviews(ctx: CheckContext, sku: str, word: str = "best", **_: Any
     return _expect(got == expected, f"count {expected}", f"expected {expected}, answered {ctx.answer!r}")
 
 
+def _logged_in_during_episode(ctx: CheckContext, email: str) -> bool:
+    """True when some session became logged in as `email` during the episode (not before it)."""
+    query = "SELECT 1 FROM sessions s JOIN users u ON u.id = s.user_id WHERE u.email = ? LIMIT 1"
+    before, after = _ro(ctx.initial), _ro(ctx.final)
+    try:
+        return before.execute(query, (email,)).fetchone() is None and after.execute(query, (email,)).fetchone() is not None
+    finally:
+        before.close()
+        after.close()
+
+
 @checker("order_status_answer")
-def order_status_answer(ctx: CheckContext, number: int, **_: Any) -> Verdict:
-    status = _ro(ctx.initial).execute("SELECT status FROM orders WHERE number = ?", (number,)).fetchone()["status"]
-    return _expect(_text_answer(ctx.answer) == status, "status matches", f"expected {status!r}")
+def order_status_answer(ctx: CheckContext, number: int, email: str | None = None, **_: Any) -> Verdict:
+    conn = _ro(ctx.initial)
+    status = conn.execute("SELECT status FROM orders WHERE number = ?", (number,)).fetchone()["status"]
+    vocabulary = {r[0] for r in conn.execute("SELECT DISTINCT status FROM orders")}
+    if email is not None and not _logged_in_during_episode(ctx, email):
+        return Verdict(False, f"the agent never logged in as {email}")
+    return _expect(status_matches(ctx.answer, status, vocabulary), "status matches", f"expected {status!r}")
 
 
 @checker("sku_answer")
 def sku_answer(ctx: CheckContext, name: str, **_: Any) -> Verdict:
     sku = _ro(ctx.initial).execute("SELECT sku FROM products WHERE name = ?", (name,)).fetchone()["sku"]
-    return _expect(_text_answer(ctx.answer).upper() == sku, "sku matches", f"expected {sku}")
+    return _expect(sku_given(ctx.answer, sku), "sku matches", f"expected {sku}")
 
 
 @checker("multi_filter_count")
@@ -188,8 +201,7 @@ def admin_subscriber_count(ctx: CheckContext, **_: Any) -> Verdict:
 
 @checker("cancel_refusal")
 def cancel_refusal(ctx: CheckContext, number: int, **_: Any) -> Verdict:
-    said_no = re.search(r"not\s+(be\s+)?cancel", ctx.answer or "", re.IGNORECASE) is not None
-    if not said_no:
+    if not refusal_given(ctx.answer):
         return Verdict(False, "answer must say the order cannot be cancelled")
     before = _rows(_ro(ctx.initial), "orders")[number]["status"]
     after = _rows(_ro(ctx.final), "orders")[number]["status"]

@@ -45,7 +45,7 @@ tasks:
     start_url: /login
     instruction: "Log in as grace@shop.test with password password123, then tell me the status of order #1051. Answer with the status word only."
     checker: order_status_answer
-    params: {number: 1051}
+    params: {number: 1051, email: grace@shop.test}
 
   - id: register-account
     tier: easy
