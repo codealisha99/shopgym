@@ -1,60 +1,88 @@
 {% extends "base.html" %}
-{% from "_macros.html" import stock_line, stars, pager, field, plate %}
+{% from "_macros.html" import stock_line, stars, pager, field, art_plate, price_tag %}
 {% block title %}{{ product['name'] }}, Ridgeline Supply{% endblock %}
 {% block content %}
-<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/products?category={{ product['category_slug'] }}">{{ product['category_name'] }}</a> / {{ product['name'] }}</nav>
-<div class="product-page">
-  <section>
-    {{ plate(product, "lg") }}
-    <h1>{{ product['name'] }}</h1>
-    <p>{{ product['description'] }}</p>
-    <p class="meta">SKU {{ product['sku'] }}</p>
-  </section>
-  <section class="summary" aria-labelledby="buy-title">
-    <h2 id="buy-title" class="sr">Buy</h2>
-    <span class="tag large">{{ product['price_cents'] | money }}</span>
-    <p>{{ stock_line(product['stock']) }}</p>
-    {% if product['review_count'] %}<p class="meta">{{ stars(product['avg_rating']) }} {{ product['avg_rating'] }} average from {{ product['review_count'] }} reviews</p>{% endif %}
-    {% if product['stock'] > 0 %}
-    <form method="post" action="/cart/add" class="stack">
-      <input type="hidden" name="sku" value="{{ product['sku'] }}">
-      <div class="field"><label for="qty">Quantity</label>
-        <select id="qty" name="qty">{% for n in range(1, [product['stock'], 10] | min + 1) %}<option value="{{ n }}">{{ n }}</option>{% endfor %}</select></div>
-      <button class="primary" type="submit">Add to cart</button>
-    </form>
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/products?category={{ product['category_slug'] }}">{{ product['category_name'] }}</a> / <span>{{ product['name'] }}</span></nav>
+<div class="buybox">
+  <div class="gallery">{{ art_plate(product['name'], "xl") }}</div>
+  <section class="buy" aria-labelledby="buy-title">
+    <p class="eyebrow">{{ product['category_name'] }}</p>
+    <h1 id="buy-title">{{ product['name'] }}</h1>
+    {% if product['review_count'] %}
+    <p class="rating-line">{{ stars(product['avg_rating']) }} <a href="#reviews">{{ product['avg_rating'] }} from {{ product['review_count'] }} reviews</a></p>
     {% else %}
-    <p class="muted">We will restock this item. Check back soon.</p>
+    <p class="rating-line muted">No reviews yet. <a href="#reviews">Be the first</a>.</p>
     {% endif %}
+    <div class="price-line">{{ price_tag(product['price_cents'], true) }}</div>
+    <p class="stock-row">{{ stock_line(product['stock']) }}</p>
+    {% if product['stock'] > 0 %}
+    <form method="post" action="/cart/add" class="buy-form">
+      <input type="hidden" name="sku" value="{{ product['sku'] }}">
+      <div class="field qty-field"><label for="qty">Quantity</label>
+        <select id="qty" name="qty">{% for n in range(1, [product['stock'], 10] | min + 1) %}<option value="{{ n }}">{{ n }}</option>{% endfor %}</select></div>
+      <button class="primary buy-button" type="submit">Add to cart</button>
+    </form>
+    <p class="meta delivery">Ships from our Essex warehouse in two working days. Free delivery on orders over $50.</p>
+    {% else %}
+    <p class="notice-box">We will restock this item. Check back soon, or <a href="/products?category={{ product['category_slug'] }}">browse similar {{ product['category_name'] | lower }}</a>.</p>
+    {% endif %}
+    <dl class="facts">
+      <div><dt>Description</dt><dd>{{ product['description'] }}</dd></div>
+      <div><dt>SKU</dt><dd>{{ product['sku'] }}</dd></div>
+      <div><dt>Department</dt><dd>{{ product['category_name'] }}</dd></div>
+    </dl>
   </section>
 </div>
 
-<section class="reviews" aria-labelledby="reviews-title">
-  <h2 id="reviews-title">Reviews</h2>
-  {% if reviews %}
+<section class="reviews" id="reviews" aria-labelledby="reviews-title">
+  <div class="reviews-head">
+    <h2 id="reviews-title">Customer reviews</h2>
+    {% if user %}<a class="button ghost" href="#write-title">Write a review</a>{% endif %}
+  </div>
+  {% if review_total %}
+  <div class="rating-summary">
+    <div class="rating-big">
+      <strong>{{ product['avg_rating'] }}</strong>
+      {{ stars(product['avg_rating']) }}
+      <span class="meta">{{ review_total }} review{{ '' if review_total == 1 else 's' }}</span>
+    </div>
+    <ul class="distribution" aria-label="Ratings breakdown">
+      {% for row in distribution %}
+      <li><span>{{ row['stars'] }} star{{ '' if row['stars'] == 1 else 's' }}</span><span class="bar" aria-hidden="true"><i style="width:{{ row['share'] }}%"></i></span><span class="num">{{ row['count'] }}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="review-list">
     {% for r in reviews %}
     <article class="review">
-      <h3>{{ r['title'] }}</h3>
-      <p class="meta">{{ stars(r['rating']) }} by {{ r['author'] }}, {{ r['created_at'][:10] }}</p>
+      <header>
+        {{ stars(r['rating']) }}
+        <h3>{{ r['title'] }}</h3>
+      </header>
       <p>{{ r['body'] }}</p>
+      <p class="meta">{{ r['author'] }} · {{ r['created_at'][:10] }}</p>
     </article>
     {% endfor %}
-    {% if review_pages > 1 %}
-      {{ pager("/products/" ~ product['sku'] ~ "?", review_page, review_pages, param="reviews_page") }}
-    {% endif %}
+  </div>
+  {% if review_pages > 1 %}
+    {{ pager("/products/" ~ product['sku'] ~ "?", review_page, review_pages, param="reviews_page") }}
+  {% endif %}
   {% else %}
-    <p class="muted">No reviews yet.</p>
+  <div class="empty"><p>No reviews yet. Buy it, use it, and be the first to say what you think.</p></div>
   {% endif %}
 
   {% if user %}
   <form method="post" action="/products/{{ product['sku'] }}/reviews" class="review-form stack" aria-labelledby="write-title">
     <h3 id="write-title">Write a review</h3>
     {% if errors %}<div class="form-error" role="alert">Please fix the highlighted fields.</div>{% endif %}
+    <div class="row">
     <div class="field{% if errors.get('rating') %} invalid{% endif %}"><label for="rating">Rating</label>
-      <select id="rating" name="rating" required>{% for n in range(5, 0, -1) %}<option value="{{ n }}"{% if form.get('rating') == n|string %} selected{% endif %}>{{ n }} of 5</option>{% endfor %}</select>
-      {% if errors.get('rating') %}<p class="error">{{ errors['rating'] }}</p>{% endif %}</div>
+      <select id="rating" name="rating" required{% if errors.get('rating') %} aria-invalid="true" aria-describedby="rating-err"{% endif %}>{% for n in range(5, 0, -1) %}<option value="{{ n }}"{% if form.get('rating') == n|string %} selected{% endif %}>{{ n }} of 5</option>{% endfor %}</select>
+      {% if errors.get('rating') %}<p class="error" id="rating-err">{{ errors['rating'] }}</p>{% endif %}</div>
     {{ field("title", "Title", form.get("title"), errors=errors) }}
+    </div>
     <div class="field{% if errors.get('body') %} invalid{% endif %}"><label for="body">Review</label>
-      <textarea id="body" name="body" rows="4" required aria-describedby="body-help">{{ form.get('body', '') }}</textarea>
+      <textarea id="body" name="body" rows="4" required aria-describedby="body-help"{% if errors.get('body') %} aria-invalid="true"{% endif %}>{{ form.get('body', '') }}</textarea>
       <p class="meta" id="body-help">At least 10 characters.</p>
       {% if errors.get('body') %}<p class="error">{{ errors['body'] }}</p>{% endif %}</div>
     <div><button type="submit">Post review</button></div>

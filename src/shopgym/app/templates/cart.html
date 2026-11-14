@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import stock_line %}
+{% from "_macros.html" import stock_line, plate %}
 {% block title %}Your cart, Ridgeline Supply{% endblock %}
 {% block content %}
 <h1>Your cart</h1>
@@ -9,7 +9,7 @@
   <tbody>
   {% for line in lines %}
     <tr>
-      <td><a href="/products/{{ line['sku'] }}">{{ line['name'] }}</a><br><span class="meta">{{ stock_line(line['stock']) }}</span></td>
+      <td><div class="line-item">{{ plate(line, "sm") }}<div><a href="/products/{{ line['sku'] }}">{{ line['name'] }}</a><br><span class="meta">{{ stock_line(line['stock']) }}</span></div></div></td>
       <td class="num">{{ line['price_cents'] | money }}</td>
       <td>
         <form method="post" action="/cart/update" class="row" style="align-items:center">

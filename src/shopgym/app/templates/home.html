@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-{% from "_macros.html" import plate %}
+{% from "_macros.html" import art_plate, price_tag, stars %}
 {% block title %}Ridgeline Supply, outdoor and home goods{% endblock %}
 {% block content %}
 <section class="hero">
-  <div>
+  <div class="hero-copy">
+    <p class="eyebrow">Essex warehouse · Outdoor and home</p>
     <h1>Gear that outlasts the trip.</h1>
     <p class="lead">Boots, bottles, lamps and maps, picked for people who use them. We test what we sell and tell you what breaks.</p>
     <div class="actions">
@@ -11,20 +12,51 @@
       <a class="button ghost" href="/products?sort=rating">Best reviewed</a>
     </div>
   </div>
-  <ul class="feature-list" aria-label="Featured products">
+  {% if featured %}
+  <div class="hero-feature">
+    <span class="hero-feature-art">{{ art_plate(featured[0]['name'], "xl") }}</span>
+    <span class="hero-feature-body">
+      <span class="eyebrow">Top rated · {{ featured[0]['category_name'] }}</span>
+      <span class="hero-feature-title">{{ featured[0]['name'] }}</span>
+      <span class="hero-feature-meta">{{ price_tag(featured[0]['price_cents']) }}{% if featured[0]['review_count'] %} <span class="meta">{{ featured[0]['avg_rating'] }} from {{ featured[0]['review_count'] }} reviews</span>{% endif %}</span>
+      <a class="hero-feature-link" href="/products/{{ featured[0]['sku'] }}">View this product</a>
+    </span>
+  </div>
+  {% endif %}
+</section>
+
+<section class="home-block" aria-labelledby="featured-title">
+  <div class="section-head">
+    <h2 id="featured-title">Best reviewed this season</h2>
+    <a href="/products?sort=rating">See all rated products</a>
+  </div>
+  <ul class="card-grid" aria-label="Featured products">
     {% for p in featured %}
-    <li>
-      {{ plate(p) }}
-      <a href="/products/{{ p['sku'] }}">{{ p['name'] }}</a>
-      <span class="tag">{{ p['price_cents'] | money }}</span>
+    <li class="card">
+      <span class="card-art">{{ art_plate(p['name'], "md") }}</span>
+      <div class="card-body">
+        <h3><a href="/products/{{ p['sku'] }}">{{ p['name'] }}</a></h3>
+        <p class="meta">{{ p['category_name'] }}{% if p['review_count'] %} · {{ stars(p['avg_rating']) }} {{ p['avg_rating'] }}{% endif %}</p>
+        {{ price_tag(p['price_cents']) }}
+      </div>
     </li>
     {% endfor %}
   </ul>
 </section>
-<section aria-labelledby="cats-title">
-  <h2 id="cats-title">Shop by department</h2>
-  <div class="cats">
-    {% for c in categories %}<a href="/products?category={{ c['slug'] }}">{{ c['name'] }}</a>{% endfor %}
+
+<section class="home-block" aria-labelledby="cats-title">
+  <div class="section-head">
+    <h2 id="cats-title">Shop by department</h2>
   </div>
+  <ul class="tiles">
+    {% for t in tiles %}
+    <li>
+      <a class="tile" href="/products?category={{ t['slug'] }}">
+        <span class="tile-art">{{ art_plate(t['sample'], "lg") if t['sample'] else '' }}</span>
+        <span class="tile-name">{{ t['name'] }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
 </section>
 {% endblock %}

@@ -20,7 +20,12 @@ def _float_or_none(raw: str | None) -> float | None:
 async def home(request):
     conn = request.state.conn
     featured = search_products(conn, sort="rating")[:4]
-    return render(request, "home.html", featured=featured)
+    departments = conn.execute("SELECT slug, name FROM categories ORDER BY name").fetchall()
+    tiles = []
+    for dept in departments:
+        sample = search_products(conn, category=dept["slug"], sort="rating")
+        tiles.append({"slug": dept["slug"], "name": dept["name"], "sample": sample[0]["name"] if sample else ""})
+    return render(request, "home.html", featured=featured, tiles=tiles)
 
 
 @page
@@ -61,8 +66,13 @@ def _reviews(conn, product_id: int) -> list:
 def _product_page(request, product, reviews, errors: dict, form: dict, status: int = 200):
     current = parse_page(request.query_params.get("reviews_page"))
     shown, pages = paginate(reviews, current, REVIEW_PAGE_SIZE)
+    total = len(reviews)
+    distribution = [{"stars": n, "count": sum(1 for r in reviews if r["rating"] == n)} for n in range(5, 0, -1)]
+    for row in distribution:
+        row["share"] = round(100 * row["count"] / total) if total else 0
     return render(request, "product.html", status=status, product=product, reviews=shown,
-                  review_pages=pages, review_page=min(current, pages), errors=errors, form=form)
+                  review_pages=pages, review_page=min(current, pages), errors=errors, form=form,
+                  distribution=distribution, review_total=total)
 
 
 @page

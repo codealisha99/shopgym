@@ -2,17 +2,18 @@
 {% from "_macros.html" import field %}
 {% block title %}Log in, Ridgeline Supply{% endblock %}
 {% block content %}
-<div class="two">
-<form method="post" action="/login" class="stack" style="max-width:26rem">
+<div class="auth-layout">
+<form method="post" action="/login" class="auth-card stack">
   <h1>Log in</h1>
-  {% if errors %}<div class="form-error" role="alert">{{ errors['password'] }}</div>{% endif %}
-  {{ field("email", "Email", email, type="email", errors=errors, autocomplete="username") }}
-  {{ field("password", "Password", "", type="password", errors=errors, autocomplete="current-password") }}
+  {% if errors %}<div class="form-error" role="alert"><strong>We could not log you in.</strong> {{ errors['password'] }}</div>{% endif %}
+  {{ field("email", "Email", email, type="email", invalid=errors, autocomplete="username") }}
+  {{ field("password", "Password", "", type="password", invalid=errors, autocomplete="current-password") }}
   <div class="actions"><button class="primary" type="submit">Log in</button></div>
 </form>
-<aside class="card-note">
+<aside class="card-note auth-aside">
   <p><strong>New here?</strong></p>
-  <p><a href="/register">Create an account</a> to save addresses and track orders.</p>
+  <p>An account saves your addresses and lets you track orders.</p>
+  <p><a href="/register">Create an account</a></p>
 </aside>
 </div>
 {% endblock %}

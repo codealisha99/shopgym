@@ -4,6 +4,8 @@
 {% block content %}
 {% set f = filters %}
 <div class="catalogue">
+  <details class="refine" open>
+  <summary class="refine-toggle">Refine results</summary>
   <form class="filters" method="get" action="/products" aria-label="Filter products">
     <h2>Refine</h2>
     <div class="field"><label for="f-q">Keywords</label><input id="f-q" name="q" type="search" value="{{ f.get('q', '') }}"></div>
@@ -27,6 +29,7 @@
       </select></div>
     <button type="submit">Apply filters</button>
   </form>
+  </details>
   <section aria-labelledby="results-title">
     <div class="results-head">
       <h1 id="results-title" class="results-title">{{ heading }}</h1>
@@ -36,7 +39,7 @@
     <ul class="product-list">
       {% for p in products %}
       <li>
-        {{ plate(p) }}
+        {{ plate(p, "md") }}
         <div>
           <h3><a href="/products/{{ p['sku'] }}">{{ p['name'] }}</a></h3>
           <p class="meta">{{ p['category_name'] }} · {{ stock_line(p['stock']) }}</p>
@@ -62,7 +65,10 @@
     </ul>
     {{ pager(base_url, page_no, pages) }}
     {% else %}
-    <p class="panel">Nothing matches those filters. Try fewer keywords or clear the price limit.</p>
+    <div class="empty">
+      <p><strong>Nothing matches those filters.</strong> Try fewer keywords or clear the price limit.</p>
+      <p class="empty-links"><a href="/products">Clear all filters</a><a href="/">Back to the home page</a></p>
+    </div>
     {% endif %}
   </section>
 </div>

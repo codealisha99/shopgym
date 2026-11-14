@@ -1,6 +1,8 @@
 {% extends "admin/_layout.html" %}
+{% from "_macros.html" import status_badge %}
 {% block admin %}
-<h1>Orders</h1>
+<div class="admin-page">
+<div class="page-head"><h1>Orders</h1><p class="meta">Newest first. Open an order to ship, refund or check its activity.</p></div>
 <form method="get" action="/admin/orders" class="toolbar">
   <div class="field"><label for="status">Status</label>
     <select id="status" name="status">
@@ -9,7 +11,7 @@
     </select></div>
   <button type="submit" class="ghost">Filter</button>
 </form>
-<table>
+<table class="dense">
   <thead><tr><th scope="col">Order</th><th scope="col">Customer</th><th scope="col">Email</th><th scope="col">Status</th><th scope="col" class="num">Total</th></tr></thead>
   <tbody>
   {% for o in orders %}
@@ -17,12 +19,13 @@
     <td><a href="/admin/orders/{{ o['number'] }}">#{{ o['number'] }}</a></td>
     <td>{{ o['customer_name'] or 'Guest' }}</td>
     <td>{{ o['email'] }}</td>
-    <td>{{ o['status'] }}</td>
+    <td>{{ status_badge(o['status']) }}</td>
     <td class="num">{{ o['total_cents'] | money }}</td>
   </tr>
   {% else %}
-  <tr><td colspan="5">No orders match this status.</td></tr>
+  <tr><td colspan="5" class="empty-row">No orders match this status.</td></tr>
   {% endfor %}
   </tbody>
 </table>
+</div>
 {% endblock %}

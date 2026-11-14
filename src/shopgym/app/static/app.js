@@ -10,3 +10,10 @@ document.addEventListener("click", (event) => {
   const backdrop = event.target.matches("dialog.modal") ? event.target : null;
   if (backdrop) backdrop.close();
 });
+
+// Phone width: the catalogue filters start collapsed behind a "Refine results" toggle.
+// Without JS, or on wide screens, the filters stay open, so every form still works without script.
+(function () {
+  var refine = document.querySelector("details.refine");
+  if (refine && window.matchMedia("(max-width: 860px)").matches) refine.removeAttribute("open");
+})();

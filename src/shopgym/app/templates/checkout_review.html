@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% from "_macros.html" import plate %}
 {% block title %}Review order, Ridgeline Supply{% endblock %}
 {% block content %}
 <p class="steps"><span>1. Shipping</span><span>2. Payment</span><span class="on" aria-current="step">3. Review</span></p>
 <h1>Review and place your order</h1>
 <table>
   <thead><tr><th scope="col">Item</th><th scope="col" class="num">Qty</th><th scope="col" class="num">Total</th></tr></thead>
-  <tbody>{% for line in lines %}<tr><td>{{ line['name'] }}</td><td class="num">{{ line['qty'] }}</td><td class="num">{{ line['line_cents'] | money }}</td></tr>{% endfor %}</tbody>
+  <tbody>{% for line in lines %}<tr><td><div class="line-item">{{ plate(line, "sm") }}<span>{{ line['name'] }}</span></div></td><td class="num">{{ line['qty'] }}</td><td class="num">{{ line['line_cents'] | money }}</td></tr>{% endfor %}</tbody>
 </table>
 <div class="totals">
   <div><span>Subtotal</span><span>{{ totals.subtotal | money }}</span></div>

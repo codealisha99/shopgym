@@ -1,20 +1,23 @@
 {% extends "admin/_layout.html" %}
+{% from "_macros.html" import art_plate %}
 {% block admin %}
-<h1>Products</h1>
+<div class="admin-page">
+<div class="page-head"><h1>Products</h1><p class="meta">Prices and stock levels. Changes go live on the storefront at once.</p></div>
 <form method="get" action="/admin/products" class="toolbar">
   <div class="field"><label for="pq">Name or SKU</label><input id="pq" name="q" type="search" value="{{ q }}"></div>
   <button type="submit" class="ghost">Search</button>
 </form>
-<table>
+<table class="dense">
   <thead><tr><th scope="col">SKU</th><th scope="col">Name</th><th scope="col">Department</th><th scope="col" class="num">Price</th><th scope="col" class="num">Stock</th><th scope="col"><span class="sr">Edit</span></th></tr></thead>
   <tbody>
   {% for p in products %}
-  <tr>
-    <td>{{ p['sku'] }}</td><td>{{ p['name'] }}</td><td>{{ p['category_name'] }}</td>
-    <td class="num">{{ p['price_cents'] | money }}</td><td class="num">{{ p['stock'] }}</td>
-    <td><a href="/admin/products/{{ p['sku'] }}">Edit</a></td>
+  <tr{% if p['stock'] < 5 %} class="low-stock"{% endif %}>
+    <td class="mono">{{ p['sku'] }}</td><td><span class="thumb">{{ art_plate(p['name'], "sm") }}</span>{{ p['name'] }}</td><td>{{ p['category_name'] }}</td>
+    <td class="num">{{ p['price_cents'] | money }}</td><td class="num">{{ p['stock'] }}{% if p['stock'] < 5 %} <span class="badge badge-low">Low</span>{% endif %}</td>
+    <td class="actions-cell"><a href="/admin/products/{{ p['sku'] }}">Edit</a></td>
   </tr>
   {% endfor %}
   </tbody>
 </table>
+</div>
 {% endblock %}

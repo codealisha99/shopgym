@@ -15,6 +15,7 @@ from starlette.templating import Jinja2Templates
 
 from starlette.responses import PlainTextResponse
 
+from shopgym.app.art import product_art
 from shopgym.app.db import connect
 from shopgym.app.seed import build_database
 from shopgym.app.limits import client_ip
@@ -30,6 +31,7 @@ def money(cents: int | None) -> str:
 
 
 templates.env.filters["money"] = money
+templates.env.globals["art"] = product_art
 
 
 def episode_db_path(data_dir: Path, episode: str | None) -> Path:

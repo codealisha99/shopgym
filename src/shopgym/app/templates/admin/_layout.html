@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Admin, Ridgeline Supply{% endblock %}
 {% block content %}
-<nav class="admin-bar" aria-label="Admin sections">
-  <div class="wrap">
-    {% for href, label, key in [("/admin", "Dashboard", "dashboard"), ("/admin/orders", "Orders", "orders"), ("/admin/products", "Products", "products"), ("/admin/reviews", "Reviews", "reviews"), ("/admin/newsletter", "Newsletter", "newsletter")] %}
-    <a href="{{ href }}"{% if section == key %} class="on" aria-current="page"{% endif %}>{{ label }}</a>
-    {% endfor %}
-  </div>
-</nav>
-{% block admin %}{% endblock %}
+<div class="admin-frame">
+  <nav class="admin-bar" aria-label="Admin sections">
+    <div class="wrap admin-bar-row">
+      <span class="admin-title">Store admin</span>
+      {% for href, label, key in [("/admin", "Dashboard", "dashboard"), ("/admin/orders", "Orders", "orders"), ("/admin/products", "Products", "products"), ("/admin/reviews", "Reviews", "reviews"), ("/admin/newsletter", "Newsletter", "newsletter")] %}
+      <a href="{{ href }}"{% if section == key %} class="on" aria-current="page"{% endif %}>{{ label }}</a>
+      {% endfor %}
+    </div>
+  </nav>
+  {% block admin %}{% endblock %}
+</div>
 {% endblock %}

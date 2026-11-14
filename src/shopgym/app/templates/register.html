@@ -2,12 +2,19 @@
 {% from "_macros.html" import field %}
 {% block title %}Create account, Ridgeline Supply{% endblock %}
 {% block content %}
-<form method="post" action="/register" class="stack" style="max-width:26rem">
+<div class="auth-layout">
+<form method="post" action="/register" class="auth-card stack">
   <h1>Create an account</h1>
+  {% if errors %}<div class="form-error" role="alert">Please fix the highlighted fields.</div>{% endif %}
   {{ field("name", "Full name", form.get("name", ""), errors=errors, autocomplete="name") }}
   {{ field("email", "Email", form.get("email", ""), type="email", errors=errors, autocomplete="email") }}
   {{ field("password", "Password (at least 8 characters)", "", type="password", errors=errors, autocomplete="new-password") }}
   {{ field("confirm", "Confirm password", "", type="password", errors=errors, autocomplete="new-password") }}
   <div class="actions"><button class="primary" type="submit">Create account</button><a href="/login">I have an account</a></div>
 </form>
+<aside class="card-note auth-aside">
+  <p><strong>Your account</strong></p>
+  <p>Save addresses, track orders and manage your newsletter preference in one place.</p>
+</aside>
+</div>
 {% endblock %}

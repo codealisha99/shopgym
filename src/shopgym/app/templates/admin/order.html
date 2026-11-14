@@ -1,15 +1,15 @@
 {% extends "admin/_layout.html" %}
-{% from "_macros.html" import field %}
+{% from "_macros.html" import field, art_plate, status_badge %}
 {% block admin %}
 <p class="crumbs"><a href="/admin/orders">All orders</a></p>
 <h1>Order #{{ order['number'] }}</h1>
-<p class="meta">{{ order['customer_name'] or 'Guest' }} &lt;{{ order['email'] }}&gt;. Placed {{ order['created_at'][:10] }}. Status <span class="pill">{{ order['status'] }}</span>{% if order['tracking_number'] %}. Tracking {{ order['tracking_number'] }}{% endif %}</p>
+<p class="meta">{{ order['customer_name'] or 'Guest' }} &lt;{{ order['email'] }}&gt;. Placed {{ order['created_at'][:10] }}. Status {{ status_badge(order['status']) }}{% if order['tracking_number'] %}. Tracking {{ order['tracking_number'] }}{% endif %}</p>
 {% if errors %}<div class="form-error" role="alert">{% for msg in errors.values() %}<p style="margin:0">{{ msg }}</p>{% endfor %}</div>{% endif %}
 <div class="two">
   <section>
     <table>
       <thead><tr><th scope="col">Item</th><th scope="col" class="num">Qty</th><th scope="col" class="num">Unit</th></tr></thead>
-      <tbody>{% for it in items %}<tr><td>{{ it['product_name'] }}</td><td class="num">{{ it['qty'] }}</td><td class="num">{{ it['unit_price_cents'] | money }}</td></tr>{% endfor %}</tbody>
+      <tbody>{% for it in items %}<tr><td><div class="line-item">{{ art_plate(it['product_name'], "sm") }}<span>{{ it['product_name'] }}</span></div></td><td class="num">{{ it['qty'] }}</td><td class="num">{{ it['unit_price_cents'] | money }}</td></tr>{% endfor %}</tbody>
     </table>
     <div class="totals">
       <div><span>Subtotal</span><span>{{ order['subtotal_cents'] | money }}</span></div>

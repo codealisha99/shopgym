@@ -1,24 +1,28 @@
 {% extends "admin/_layout.html" %}
+{% from "_macros.html" import status_badge %}
 {% block admin %}
-<h1>Dashboard</h1>
+<div class="admin-page">
+<div class="page-head"><h1>Dashboard</h1><p class="meta">Store activity at a glance.</p></div>
 <div class="kpis">
-  <div><strong>{{ stats.subscribers }}</strong>Active newsletter subscribers</div>
-  <div><strong>{{ stats.low_stock }}</strong>Products under 5 in stock</div>
-  <div><strong>{{ stats.hidden_reviews }}</strong>Hidden reviews</div>
+  <div><strong>{{ stats.subscribers }}</strong><span>Active newsletter subscribers</span></div>
+  <div><strong>{{ stats.low_stock }}</strong><span>Products under 5 in stock</span></div>
+  <div><strong>{{ stats.hidden_reviews }}</strong><span>Hidden reviews</span></div>
 </div>
-<div class="two">
+<div class="two admin-two">
   <section>
     <h2>Recent orders</h2>
-    <table>
+    <table class="dense">
       <thead><tr><th scope="col">Order</th><th scope="col">Placed</th><th scope="col">Status</th><th scope="col" class="num">Total</th></tr></thead>
-      <tbody>{% for o in recent %}<tr><td><a href="/admin/orders/{{ o['number'] }}">#{{ o['number'] }}</a></td><td>{{ o['created_at'][:10] }}</td><td>{{ o['status'] }}</td><td class="num">{{ o['total_cents'] | money }}</td></tr>{% endfor %}</tbody>
+      <tbody>{% for o in recent %}<tr><td><a href="/admin/orders/{{ o['number'] }}">#{{ o['number'] }}</a></td><td>{{ o['created_at'][:10] }}</td><td>{{ status_badge(o['status']) }}</td><td class="num">{{ o['total_cents'] | money }}</td></tr>{% endfor %}</tbody>
     </table>
   </section>
   <section>
     <h2>Orders by status</h2>
-    <table>
-      <tbody>{% for row in by_status %}<tr><td>{{ row['status'] }}</td><td class="num">{{ row['n'] }}</td></tr>{% endfor %}</tbody>
+    <table class="dense">
+      <thead><tr><th scope="col">Status</th><th scope="col" class="num">Orders</th></tr></thead>
+      <tbody>{% for row in by_status %}<tr><td>{{ status_badge(row['status']) }}</td><td class="num">{{ row['n'] }}</td></tr>{% endfor %}</tbody>
     </table>
   </section>
+</div>
 </div>
 {% endblock %}

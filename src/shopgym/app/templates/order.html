@@ -1,15 +1,15 @@
 {% extends "base.html" %}
-{% from "_macros.html" import address_fields, field %}
+{% from "_macros.html" import address_fields, field, art_plate, status_badge %}
 {% block title %}Order {{ order['number'] }}, Ridgeline Supply{% endblock %}
 {% block content %}
 <p class="crumbs"><a href="/account/orders">Your orders</a></p>
 <h1>Order #{{ order['number'] }}</h1>
-<p class="meta">Placed {{ order['created_at'][:10] }}. Status: <span class="pill{% if order['status'] == 'cancelled' %} bad{% endif %}">{{ order['status'] }}</span>{% if order['tracking_number'] %}. Tracking {{ order['tracking_number'] }}{% endif %}</p>
+<p class="meta">Placed {{ order['created_at'][:10] }}. Status: {{ status_badge(order['status']) }}{% if order['tracking_number'] %}. Tracking {{ order['tracking_number'] }}{% endif %}</p>
 <div class="two">
   <section>
     <table>
       <thead><tr><th scope="col">Item</th><th scope="col" class="num">Qty</th><th scope="col" class="num">Total</th></tr></thead>
-      <tbody>{% for it in items %}<tr><td>{{ it['product_name'] }}</td><td class="num">{{ it['qty'] }}</td><td class="num">{{ (it['unit_price_cents'] * it['qty']) | money }}</td></tr>{% endfor %}</tbody>
+      <tbody>{% for it in items %}<tr><td><div class="line-item">{{ art_plate(it['product_name'], "sm") }}<span>{{ it['product_name'] }}</span></div></td><td class="num">{{ it['qty'] }}</td><td class="num">{{ (it['unit_price_cents'] * it['qty']) | money }}</td></tr>{% endfor %}</tbody>
     </table>
     <div class="totals">
       <div><span>Subtotal</span><span>{{ order['subtotal_cents'] | money }}</span></div>

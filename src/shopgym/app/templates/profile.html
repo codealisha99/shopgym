@@ -2,10 +2,13 @@
 {% from "_macros.html" import field %}
 {% block title %}Profile, Ridgeline Supply{% endblock %}
 {% block content %}
-<form method="post" action="/account/profile" class="stack" style="max-width:26rem">
+<div class="auth-layout">
+<form method="post" action="/account/profile" class="auth-card stack">
   <h1>Your profile</h1>
+  {% if errors %}<div class="form-error" role="alert">Please fix the highlighted fields.</div>{% endif %}
   {{ field("name", "Name", form.get("name"), errors=errors, autocomplete="name") }}
   {{ field("email", "Email", form.get("email"), type="email", errors=errors, autocomplete="email") }}
   <div class="actions"><button class="primary" type="submit">Save profile</button><a href="/account">Back to account</a></div>
 </form>
+</div>
 {% endblock %}

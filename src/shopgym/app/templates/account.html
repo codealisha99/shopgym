@@ -1,14 +1,15 @@
 {% extends "base.html" %}
+{% from "_macros.html" import status_badge %}
 {% block title %}Your account, Ridgeline Supply{% endblock %}
 {% block content %}
-<h1>Hello, {{ user['name'] }}</h1>
+<div class="page-head"><h1>Hello, {{ user['name'] }}</h1><p class="meta">Your recent orders, newsletter preference and saved details.</p></div>
 <div class="two">
   <section>
     <h2>Recent orders</h2>
     {% if orders %}
     <table>
       <thead><tr><th scope="col">Order</th><th scope="col">Placed</th><th scope="col">Status</th><th scope="col" class="num">Total</th></tr></thead>
-      <tbody>{% for o in orders %}<tr><td><a href="/account/orders/{{ o['number'] }}">#{{ o['number'] }}</a></td><td>{{ o['created_at'][:10] }}</td><td>{{ o['status'] }}</td><td class="num">{{ o['total_cents'] | money }}</td></tr>{% endfor %}</tbody>
+      <tbody>{% for o in orders %}<tr><td><a href="/account/orders/{{ o['number'] }}">#{{ o['number'] }}</a></td><td>{{ o['created_at'][:10] }}</td><td>{{ status_badge(o['status']) }}</td><td class="num">{{ o['total_cents'] | money }}</td></tr>{% endfor %}</tbody>
     </table>
     <p><a href="/account/orders">All orders</a></p>
     {% else %}
