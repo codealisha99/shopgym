@@ -64,6 +64,9 @@ def _run(args: argparse.Namespace) -> None:
         unknown = set(tasks) - set(load_tasks())
         if unknown:
             raise SystemExit(f"unknown tasks: {', '.join(sorted(unknown))}")
+    if "llm" in args.agents.split(",") and os.environ.get("SHOPGYM_PROVIDER", "anthropic") == "anthropic" \
+            and not os.environ.get("ANTHROPIC_API_KEY"):
+        raise SystemExit("the llm agent needs ANTHROPIC_API_KEY (or SHOPGYM_PROVIDER=openai); see .env.example")
     seeds = [int(s) for s in args.seeds.split(",")] if args.seeds else None
     run_dir = Path(args.run_dir).resolve()
     run_suite(args.agents.split(","), agent_factory=lambda a, s: make_agent(a, s, args.mode),
@@ -94,16 +97,23 @@ def _demo(args: argparse.Namespace) -> None:
     print(f"viewer: {viewer}")
 
 
+def _check_run_dir(path: str) -> Path:
+    run_dir = Path(path).resolve()
+    if not (run_dir / "summary.json").exists() and not any(run_dir.glob("*/*/*/result.json")):
+        raise SystemExit(f"no run results found in {run_dir}")
+    return run_dir
+
+
 def _report(args: argparse.Namespace) -> None:
     from shopgym.harness.report import score_table, write_summary
 
-    print(score_table(write_summary(Path(args.run_dir).resolve())))
+    print(score_table(write_summary(_check_run_dir(args.run_dir))))
 
 
 def _view(args: argparse.Namespace) -> None:
     from shopgym.harness.viewer import build_viewer
 
-    run_dir = Path(args.run_dir).resolve()
+    run_dir = _check_run_dir(args.run_dir)
     print(build_viewer(run_dir, Path(args.out).resolve()))
 
 
