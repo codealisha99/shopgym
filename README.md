@@ -89,8 +89,8 @@ Open it in a browser to step through any episode.
 Other commands:
 
 ```bash
-make test                      # all tests (about 1 minute; browser tests included)
-make test-fast                 # everything except the browser tests (about 25 seconds)
+make test                      # all tests (about 1 to 2 minutes; browser tests included)
+make test-fast                 # everything except the browser tests (about 40 seconds)
 uv run shopgym serve           # run the shop on http://127.0.0.1:4200 and browse it
 uv run shopgym tasks           # list tasks
 uv run shopgym report runs/demo
@@ -129,7 +129,7 @@ episodes with a `result.json` on disk are skipped unless you pass `--force`.
 
 ## Verification
 
-- `make test`: 146 tests, all passing. Line coverage of `src/` is 86%.
+- `make test`: 150 tests, all passing. Line coverage of `src/` is 86%.
 - Per-task: every checker fails a no-op, and each task's oracle passes (`test_oracle_solves_every_task`).
   Deliberate wrong actions fail: cancelling order 1043 instead of 1042, refunding the other Hedy Lamarr's
   order, a cart with the wrong quantity, and an unrelated write in the newsletter task.
