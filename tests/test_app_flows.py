@@ -1,5 +1,6 @@
 """Key storefront, account and admin flows, exercised over HTTP with no browser."""
 
+import pytest
 from starlette.testclient import TestClient
 
 from shopgym.app.catalog import search_products
@@ -132,3 +133,13 @@ def test_admin_order_list_and_filter_render(client):
     assert "#1042" in client.get("/admin/orders").text
     filtered = client.get("/admin/orders?status=shipped")
     assert filtered.status_code == 200 and "#1044" in filtered.text and "#1042" not in filtered.text
+
+
+@pytest.mark.parametrize("price, stock", [("inf", "1"), ("1", str(10**20)), ("1e308", "1")])
+def test_admin_product_save_rejects_out_of_range_values(client, price, stock):
+    login(client, "admin@shop.test")
+    before = db(client).execute("SELECT price_cents, stock FROM products WHERE sku='CLO-TRP-01'").fetchone()
+    resp = client.post("/admin/products/CLO-TRP-01", data={"name": "x", "price": price, "stock": stock})
+    assert resp.status_code == 422
+    after = db(client).execute("SELECT price_cents, stock FROM products WHERE sku='CLO-TRP-01'").fetchone()
+    assert tuple(after) == tuple(before)

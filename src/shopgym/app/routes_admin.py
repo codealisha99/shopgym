@@ -1,5 +1,6 @@
 """Admin panel: dashboard, order management, products, review moderation, newsletter."""
 
+import math
 from datetime import datetime
 
 from starlette.routing import Route
@@ -8,6 +9,8 @@ from shopgym.app.web import page, redirect, render, require_admin
 from shopgym.config import SHOP_NOW
 
 NOW = datetime.fromisoformat(SHOP_NOW).isoformat()
+MAX_PRICE_CENTS = 10**9  # keeps values inside SQLite's 64-bit INTEGER
+MAX_STOCK = 10**6
 SHIPPABLE = ("processing",)
 REFUNDABLE = ("processing", "shipped", "delivered")
 
@@ -135,14 +138,15 @@ async def product_save(request):
     form = await request.form()
     errors = {}
     try:
-        price_cents = round(float(form.get("price", "")) * 100)
-        if price_cents <= 0:
+        price = float(form.get("price", ""))
+        if not math.isfinite(price) or not 0 < price * 100 <= MAX_PRICE_CENTS:
             raise ValueError
+        price_cents = round(price * 100)
     except ValueError:
         errors["price"] = "Enter a price above zero."
     try:
         stock = int(form.get("stock", ""))
-        if stock < 0:
+        if not 0 <= stock <= MAX_STOCK:
             raise ValueError
     except ValueError:
         errors["stock"] = "Stock must be zero or more."
