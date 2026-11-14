@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Review order, Ridgeline Supply{% endblock %}
+{% block content %}
+<p class="steps"><span>1. Shipping</span><span>2. Payment</span><span class="on" aria-current="step">3. Review</span></p>
+<h1>Review and place your order</h1>
+<table>
+  <thead><tr><th scope="col">Item</th><th scope="col" class="num">Qty</th><th scope="col" class="num">Total</th></tr></thead>
+  <tbody>{% for line in lines %}<tr><td>{{ line['name'] }}</td><td class="num">{{ line['qty'] }}</td><td class="num">{{ line['line_cents'] | money }}</td></tr>{% endfor %}</tbody>
+</table>
+<div class="totals">
+  <div><span>Subtotal</span><span>{{ totals.subtotal | money }}</span></div>
+  {% if totals.discount %}<div><span>Coupon {{ coupon }}</span><span>-{{ totals.discount | money }}</span></div>{% endif %}
+  <div><span>Shipping</span><span>{{ 'Free' if totals.shipping == 0 else totals.shipping | money }}</span></div>
+  <div class="grand"><span>Total</span><span>{{ totals.total | money }}</span></div>
+</div>
+<div class="two" style="margin-top:2rem">
+  <section>
+    <h2>Shipping to</h2>
+    <p>{{ ship.full_name }}<br>{{ ship.line1 }}<br>{{ ship.city }} {{ ship.postcode }}<br>{{ ship.country }}</p>
+    <p class="meta">Card ending {{ card_last4 }}. Confirmation to {{ ship.email }}.</p>
+  </section>
+  <form method="post" action="/checkout/place" class="stack">
+    {% for key in ["email", "full_name", "line1", "city", "postcode", "country"] %}
+    <input type="hidden" name="{{ key }}" value="{{ ship.get(key, '') }}">
+    {% endfor %}
+    <input type="hidden" name="coupon" value="{{ coupon }}">
+    <button class="primary" type="submit">Place order for {{ totals.total | money }}</button>
+    <p class="meta">Stock is reserved when you place the order.</p>
+  </form>
+</div>
+{% endblock %}

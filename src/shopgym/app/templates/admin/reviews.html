@@ -1,0 +1,20 @@
+{% extends "admin/_layout.html" %}
+{% from "_macros.html" import stars %}
+{% block admin %}
+<h1>Reviews</h1>
+<table>
+  <thead><tr><th scope="col">Product</th><th scope="col">Rating</th><th scope="col">Review</th><th scope="col">Author</th><th scope="col">Status</th><th scope="col"><span class="sr">Actions</span></th></tr></thead>
+  <tbody>
+  {% for r in reviews %}
+  <tr class="{% if r['hidden'] %}hidden-row{% endif %}">
+    <td>{{ r['product_name'] }}<br><span class="meta">{{ r['sku'] }}</span></td>
+    <td>{{ stars(r['rating']) }}</td>
+    <td><strong>{{ r['title'] }}</strong><br>{{ r['body'] }}</td>
+    <td>{{ r['author_email'] }}</td>
+    <td>{% if r['hidden'] %}<span class="pill bad">Hidden</span>{% else %}Visible{% endif %}</td>
+    <td>{% if not r['hidden'] %}<form method="post" action="/admin/reviews/{{ r['id'] }}/hide" class="inline"><button class="ghost" type="submit">Hide</button></form>{% endif %}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

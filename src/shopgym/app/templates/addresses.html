@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% from "_macros.html" import address_fields, field %}
+{% block title %}Addresses, Ridgeline Supply{% endblock %}
+{% block content %}
+<h1>Addresses</h1>
+<div class="two">
+  <section>
+    {% for a in addresses %}
+    <article class="review" aria-label="{{ a['label'] }} address">
+      <h2 style="font-size:1.2rem">{{ a['label'] }}{% if a['is_default'] %} <span class="pill">Default</span>{% endif %}</h2>
+      <p>{{ a['full_name'] }}<br>{{ a['line1'] }}<br>{{ a['city'] }} {{ a['postcode'] }}<br>{{ a['country'] }}</p>
+      <div class="actions" style="margin-top:0">
+        {% if not a['is_default'] %}
+        <form method="post" action="/account/addresses/{{ a['id'] }}/default" class="inline"><button class="ghost" type="submit">Make default</button></form>
+        {% endif %}
+        <button type="button" class="link" data-open="del-{{ a['id'] }}">Delete</button>
+        <dialog id="del-{{ a['id'] }}" class="modal" aria-labelledby="del-{{ a['id'] }}-title">
+          <h2 id="del-{{ a['id'] }}-title">Delete this address?</h2>
+          <p>{{ a['label'] }}, {{ a['line1'] }}. Past orders keep their own copy of the address.</p>
+          <form method="post" action="/account/addresses/{{ a['id'] }}/delete" class="actions">
+            <button type="button" class="ghost" data-close>Keep address</button>
+            <button type="submit" class="primary">Delete address</button>
+          </form>
+        </dialog>
+      </div>
+    </article>
+    {% else %}
+    <p>No saved addresses yet.</p>
+    {% endfor %}
+  </section>
+  <section>
+    <h2>Add an address</h2>
+    {% if errors %}<div class="form-error" role="alert">Please fix the highlighted fields.</div>{% endif %}
+    <form method="post" action="/account/addresses" class="stack">
+      {{ field("label", "Label (for example Home or Office)", form.get("label", ""), errors=errors, required=false) }}
+      {{ address_fields(form, errors) }}
+      <div class="check"><input id="is_default" name="is_default" type="checkbox" value="1"><label for="is_default">Use as my default address</label></div>
+      <button type="submit">Save address</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

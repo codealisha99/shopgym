@@ -1,0 +1,24 @@
+{% extends "admin/_layout.html" %}
+{% block admin %}
+<h1>Dashboard</h1>
+<div class="kpis">
+  <div><strong>{{ stats.subscribers }}</strong>Active newsletter subscribers</div>
+  <div><strong>{{ stats.low_stock }}</strong>Products under 5 in stock</div>
+  <div><strong>{{ stats.hidden_reviews }}</strong>Hidden reviews</div>
+</div>
+<div class="two">
+  <section>
+    <h2>Recent orders</h2>
+    <table>
+      <thead><tr><th scope="col">Order</th><th scope="col">Placed</th><th scope="col">Status</th><th scope="col" class="num">Total</th></tr></thead>
+      <tbody>{% for o in recent %}<tr><td><a href="/admin/orders/{{ o['number'] }}">#{{ o['number'] }}</a></td><td>{{ o['created_at'][:10] }}</td><td>{{ o['status'] }}</td><td class="num">{{ o['total_cents'] | money }}</td></tr>{% endfor %}</tbody>
+    </table>
+  </section>
+  <section>
+    <h2>Orders by status</h2>
+    <table>
+      <tbody>{% for row in by_status %}<tr><td>{{ row['status'] }}</td><td class="num">{{ row['n'] }}</td></tr>{% endfor %}</tbody>
+    </table>
+  </section>
+</div>
+{% endblock %}

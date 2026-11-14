@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Create account, Ridgeline Supply{% endblock %}
+{% block content %}
+<form method="post" action="/register" class="stack" style="max-width:26rem">
+  <h1>Create an account</h1>
+  {{ field("name", "Full name", form.get("name", ""), errors=errors, autocomplete="name") }}
+  {{ field("email", "Email", form.get("email", ""), type="email", errors=errors, autocomplete="email") }}
+  {{ field("password", "Password (at least 8 characters)", "", type="password", errors=errors, autocomplete="new-password") }}
+  {{ field("confirm", "Confirm password", "", type="password", errors=errors, autocomplete="new-password") }}
+  <div class="actions"><button class="primary" type="submit">Create account</button><a href="/login">I have an account</a></div>
+</form>
+{% endblock %}

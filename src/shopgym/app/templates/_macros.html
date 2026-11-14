@@ -1,0 +1,49 @@
+{% macro field(name, label, value="", type="text", errors={}, required=true, extra="", autocomplete="") -%}
+<div class="field{% if errors.get(name) %} invalid{% endif %}">
+  <label for="{{ name }}">{{ label }}</label>
+  <input id="{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ value or '' }}"{% if required %} required{% endif %}{% if autocomplete %} autocomplete="{{ autocomplete }}"{% endif %} {{ extra }}{% if errors.get(name) %} aria-invalid="true" aria-describedby="{{ name }}-err"{% endif %}>
+  {% if errors.get(name) %}<p class="error" id="{{ name }}-err">{{ errors[name] }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro country_select(current, errors={}) -%}
+<div class="field{% if errors.get('country') %} invalid{% endif %}">
+  <label for="country">Country</label>
+  <select id="country" name="country" required>
+    {% for c in ["United Kingdom", "Ireland", "France", "Germany", "Netherlands"] %}
+    <option value="{{ c }}"{% if c == current %} selected{% endif %}>{{ c }}</option>
+    {% endfor %}
+  </select>
+  {% if errors.get('country') %}<p class="error">{{ errors['country'] }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro address_fields(v, errors={}) -%}
+<div class="row">
+  {{ field("full_name", "Full name", v.get("full_name"), errors=errors, autocomplete="name") }}
+</div>
+{{ field("line1", "Street address", v.get("line1"), errors=errors, autocomplete="street-address") }}
+<div class="row">
+  {{ field("city", "City", v.get("city"), errors=errors, autocomplete="address-level2") }}
+  {{ field("postcode", "Postcode", v.get("postcode"), errors=errors, autocomplete="postal-code") }}
+</div>
+{{ country_select(v.get("country"), errors) }}
+{%- endmacro %}
+
+{% macro stock_line(stock) -%}
+{% if stock == 0 %}<span class="stock-out">Out of stock</span>
+{% elif stock <= 3 %}<span class="stock-low">Only {{ stock }} left</span>
+{% else %}<span class="stock-ok">In stock</span>{% endif %}
+{%- endmacro %}
+
+{% macro stars(rating) -%}
+<span class="stars" aria-label="{{ rating }} out of 5 stars">{% for i in range(1, 6) %}{{ "★" if i <= rating|round|int else "☆" }}{% endfor %}</span>
+{%- endmacro %}
+
+{% macro pager(path_qs, page_no, pages, param="page") -%}
+<nav class="pager" aria-label="Pagination">
+  {% if page_no > 1 %}<a href="{{ path_qs }}{{ param }}={{ page_no - 1 }}" rel="prev">Previous page</a>{% else %}<span class="muted">Start of results</span>{% endif %}
+  <span class="muted">Page {{ page_no }} of {{ pages }}</span>
+  {% if page_no < pages %}<a href="{{ path_qs }}{{ param }}={{ page_no + 1 }}" rel="next">Next page</a>{% else %}<span class="muted">End of results</span>{% endif %}
+</nav>
+{%- endmacro %}

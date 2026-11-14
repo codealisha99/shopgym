@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Log in, Ridgeline Supply{% endblock %}
+{% block content %}
+<div class="two">
+<form method="post" action="/login" class="stack" style="max-width:26rem">
+  <h1>Log in</h1>
+  {% if errors %}<div class="form-error" role="alert">{{ errors['password'] }}</div>{% endif %}
+  {{ field("email", "Email", email, type="email", errors=errors, autocomplete="username") }}
+  {{ field("password", "Password", "", type="password", errors=errors, autocomplete="current-password") }}
+  <div class="actions"><button class="primary" type="submit">Log in</button></div>
+</form>
+<aside class="card-note">
+  <p><strong>New here?</strong></p>
+  <p><a href="/register">Create an account</a> to save addresses and track orders.</p>
+</aside>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_macros.html" import address_fields, field %}
+{% block title %}Order {{ order['number'] }}, Ridgeline Supply{% endblock %}
+{% block content %}
+<p class="crumbs"><a href="/account/orders">Your orders</a></p>
+<h1>Order #{{ order['number'] }}</h1>
+<p class="meta">Placed {{ order['created_at'][:10] }}. Status: <span class="pill{% if order['status'] == 'cancelled' %} bad{% endif %}">{{ order['status'] }}</span>{% if order['tracking_number'] %}. Tracking {{ order['tracking_number'] }}{% endif %}</p>
+<div class="two">
+  <section>
+    <table>
+      <thead><tr><th scope="col">Item</th><th scope="col" class="num">Qty</th><th scope="col" class="num">Total</th></tr></thead>
+      <tbody>{% for it in items %}<tr><td>{{ it['product_name'] }}</td><td class="num">{{ it['qty'] }}</td><td class="num">{{ (it['unit_price_cents'] * it['qty']) | money }}</td></tr>{% endfor %}</tbody>
+    </table>
+    <div class="totals">
+      <div><span>Subtotal</span><span>{{ order['subtotal_cents'] | money }}</span></div>
+      {% if order['discount_cents'] %}<div><span>Coupon {{ order['coupon'] }}</span><span>-{{ order['discount_cents'] | money }}</span></div>{% endif %}
+      <div><span>Shipping</span><span>{{ 'Free' if order['shipping_cents'] == 0 else order['shipping_cents'] | money }}</span></div>
+      <div class="grand"><span>Total</span><span>{{ order['total_cents'] | money }}</span></div>
+    </div>
+    <h2 class="panel">Activity</h2>
+    <ul class="timeline">{% for e in events %}<li><time>{{ e['created_at'][:16] }}</time>{{ e['message'] }}</li>{% endfor %}</ul>
+  </section>
+  <aside class="stack">
+    <section>
+      <h2>Shipping to</h2>
+      <p>{{ order['ship_name'] }}<br>{{ order['ship_line1'] }}<br>{{ order['ship_city'] }} {{ order['ship_postcode'] }}<br>{{ order['ship_country'] }}</p>
+    </section>
+    {% if order['status'] in ['processing', 'placed'] %}
+    <section>
+      <h2>Change shipping address</h2>
+      {% if errors %}<div class="form-error" role="alert">Please fix the highlighted fields.</div>{% endif %}
+      <form method="post" action="/account/orders/{{ order['number'] }}/address" class="stack">
+        {{ address_fields({'full_name': order['ship_name'], 'line1': order['ship_line1'], 'city': order['ship_city'], 'postcode': order['ship_postcode'], 'country': order['ship_country']}, errors) }}
+        <button type="submit">Save address</button>
+      </form>
+    </section>
+    <section>
+      <button type="button" class="ghost" data-open="cancel-order">Cancel this order</button>
+      <dialog id="cancel-order" class="modal" aria-labelledby="cancel-order-title">
+        <h2 id="cancel-order-title">Cancel order #{{ order['number'] }}?</h2>
+        <p>The order will be cancelled and you will not be charged. This cannot be undone.</p>
+        <form method="post" action="/account/orders/{{ order['number'] }}/cancel" class="actions">
+          <button type="button" class="ghost" data-close>Keep order</button>
+          <button type="submit" class="primary">Cancel order</button>
+        </form>
+      </dialog>
+    </section>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

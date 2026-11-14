@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% from "_macros.html" import stock_line, stars, pager %}
+{% block title %}Shop, Ridgeline Supply{% endblock %}
+{% block content %}
+{% set f = filters %}
+<div class="catalogue">
+  <form class="filters" method="get" action="/products" aria-label="Filter products">
+    <h2>Refine</h2>
+    <div class="field"><label for="f-q">Keywords</label><input id="f-q" name="q" type="search" value="{{ f.get('q', '') }}"></div>
+    <div class="field"><label for="f-cat">Department</label>
+      <select id="f-cat" name="category">
+        <option value="">All departments</option>
+        {% for c in categories %}<option value="{{ c['slug'] }}"{% if f.get('category') == c['slug'] %} selected{% endif %}>{{ c['name'] }}</option>{% endfor %}
+      </select></div>
+    <div class="field"><label for="f-max">Highest price (dollars)</label><input id="f-max" name="max_price" type="number" min="0" step="1" value="{{ f.get('max_price', '') }}"></div>
+    <div class="field"><label for="f-rating">Minimum rating</label>
+      <select id="f-rating" name="min_rating">
+        <option value="">Any rating</option>
+        {% for r in ["3", "4"] %}<option value="{{ r }}"{% if f.get('min_rating') == r %} selected{% endif %}>{{ r }} stars and up</option>{% endfor %}
+      </select></div>
+    <div class="check"><input id="f-stock" name="in_stock" type="checkbox" value="1"{% if f.get('in_stock') == '1' %} checked{% endif %}><label for="f-stock">In stock only</label></div>
+    <div class="field"><label for="f-sort">Sort by</label>
+      <select id="f-sort" name="sort">
+        {% for value, label in [("name", "Name, A to Z"), ("price_asc", "Price, low to high"), ("price_desc", "Price, high to low"), ("rating", "Best reviewed")] %}
+        <option value="{{ value }}"{% if f.get('sort', 'name') == value %} selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select></div>
+    <button type="submit">Apply filters</button>
+  </form>
+  <section aria-labelledby="results-title">
+    <div class="results-head">
+      <h1 id="results-title" class="results-title">{{ heading }}</h1>
+      <p class="muted" style="margin:0">{{ total }} found</p>
+    </div>
+    {% if products %}
+    <ul class="product-list">
+      {% for p in products %}
+      <li>
+        <div>
+          <h3><a href="/products/{{ p['sku'] }}">{{ p['name'] }}</a></h3>
+          <p class="meta">{{ p['category_name'] }} · {{ stock_line(p['stock']) }}</p>
+          <p class="meta">{% if p['review_count'] %}{{ stars(p['avg_rating']) }} {{ p['avg_rating'] }} from {{ p['review_count'] }} reviews{% else %}No reviews yet{% endif %}</p>
+        </div>
+        <div class="price-col">
+          <span class="tag">{{ p['price_cents'] | money }}</span>
+          <button type="button" class="ghost" data-open="qv-{{ p['sku'] }}">Quick view</button>
+        </div>
+        <dialog id="qv-{{ p['sku'] }}" class="modal" aria-labelledby="qv-{{ p['sku'] }}-title">
+          <h2 id="qv-{{ p['sku'] }}-title">{{ p['name'] }}</h2>
+          <p>{{ p['description'] }}</p>
+          <p class="meta">SKU {{ p['sku'] }}. {{ p['category_name'] }}.</p>
+          <form method="post" action="/cart/add" class="actions">
+            <input type="hidden" name="sku" value="{{ p['sku'] }}">
+            <input type="hidden" name="qty" value="1">
+            {% if p['stock'] > 0 %}<button class="primary" type="submit">Add to cart</button>{% else %}<button type="button" disabled>Out of stock</button>{% endif %}
+            <button type="button" class="ghost" data-close>Keep browsing</button>
+          </form>
+        </dialog>
+      </li>
+      {% endfor %}
+    </ul>
+    {{ pager(base_url, page_no, pages) }}
+    {% else %}
+    <p class="panel">Nothing matches those filters. Try fewer keywords or clear the price limit.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

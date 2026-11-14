@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "_macros.html" import address_fields, field %}
+{% block title %}Shipping, checkout, Ridgeline Supply{% endblock %}
+{% block content %}
+<p class="steps"><span class="on" aria-current="step">1. Shipping</span><span>2. Payment</span><span>3. Review</span></p>
+<h1>Where should we send it?</h1>
+{% if errors %}<div class="form-error" role="alert">Please fix the highlighted fields.</div>{% endif %}
+<div class="two">
+<form method="post" action="/checkout/shipping" class="stack">
+  {% if user %}
+    <p class="meta">Ordering as {{ user['email'] }}</p>
+  {% else %}
+    {{ field("email", "Email for order updates", ship.get("email"), type="email", errors=errors, autocomplete="email") }}
+  {% endif %}
+  {{ address_fields(ship, errors) }}
+  <div class="actions"><button class="primary" type="submit">Continue to payment</button><a href="/cart">Back to cart</a></div>
+</form>
+<aside>
+  <h2>In your cart</h2>
+  <ul class="timeline">{% for line in lines %}<li>{{ line['name'] }} × {{ line['qty'] }}</li>{% endfor %}</ul>
+</aside>
+</div>
+{% endblock %}

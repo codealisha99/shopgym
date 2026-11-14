@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Orders, Ridgeline Supply{% endblock %}
+{% block content %}
+<h1>Your orders</h1>
+{% if orders %}
+<table>
+  <thead><tr><th scope="col">Order</th><th scope="col">Placed</th><th scope="col">Status</th><th scope="col" class="num">Total</th></tr></thead>
+  <tbody>{% for o in orders %}<tr><td><a href="/account/orders/{{ o['number'] }}">#{{ o['number'] }}</a></td><td>{{ o['created_at'][:10] }}</td><td>{{ o['status'] }}</td><td class="num">{{ o['total_cents'] | money }}</td></tr>{% endfor %}</tbody>
+</table>
+{% else %}
+<p>No orders yet.</p>
+{% endif %}
+{% endblock %}

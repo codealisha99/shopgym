@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Ridgeline Supply, outdoor and home goods{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Gear that outlasts the trip.</h1>
+    <p class="lead">Boots, bottles, lamps and maps, picked for people who use them. We test what we sell and tell you what breaks.</p>
+    <div class="actions">
+      <a class="button primary" href="/products">Browse the catalogue</a>
+      <a class="button ghost" href="/products?sort=rating">Best reviewed</a>
+    </div>
+  </div>
+  <ul class="feature-list" aria-label="Featured products">
+    {% for p in featured %}
+    <li>
+      <a href="/products/{{ p['sku'] }}">{{ p['name'] }}</a>
+      <span class="tag">{{ p['price_cents'] | money }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+<section aria-labelledby="cats-title">
+  <h2 id="cats-title">Shop by department</h2>
+  <div class="cats">
+    {% for c in categories %}<a href="/products?category={{ c['slug'] }}">{{ c['name'] }}</a>{% endfor %}
+  </div>
+</section>
+{% endblock %}

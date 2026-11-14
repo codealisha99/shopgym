@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Payment, checkout, Ridgeline Supply{% endblock %}
+{% block content %}
+<p class="steps"><span>1. Shipping</span><span class="on" aria-current="step">2. Payment</span><span>3. Review</span></p>
+<h1>Payment</h1>
+{% if errors %}<div class="form-error" role="alert">Please fix the highlighted fields.</div>{% endif %}
+<div class="two">
+<form method="post" action="/checkout/payment" class="stack">
+  {% for key in ["email", "full_name", "line1", "city", "postcode", "country"] %}
+  <input type="hidden" name="{{ key }}" value="{{ ship.get(key, '') }}">
+  {% endfor %}
+  {{ field("card_number", "Card number", "", errors=errors, autocomplete="cc-number", extra='inputmode="numeric"') }}
+  <div class="row">
+    {{ field("expiry", "Expiry (MM/YY)", "", errors=errors, autocomplete="cc-exp", extra='placeholder="MM/YY"') }}
+    {{ field("cvc", "Security code", "", errors=errors, autocomplete="cc-csc", extra='inputmode="numeric"') }}
+  </div>
+  {{ field("coupon", "Coupon code (optional)", coupon, errors=errors, required=false) }}
+  <p class="card-note">Test mode. Any card number that passes the Luhn check is accepted. Example: 4242 4242 4242 4242, any future expiry, any 3 digit code.</p>
+  <div class="actions"><button class="primary" type="submit">Review order</button><a href="/checkout">Edit shipping</a></div>
+</form>
+<aside class="card-note">
+  <p><strong>Shipping to</strong></p>
+  <p>{{ ship.get('full_name') }}<br>{{ ship.get('line1') }}<br>{{ ship.get('city') }} {{ ship.get('postcode') }}<br>{{ ship.get('country') }}</p>
+</aside>
+</div>
+{% endblock %}

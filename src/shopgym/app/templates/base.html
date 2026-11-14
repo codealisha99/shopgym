@@ -1,0 +1,60 @@
+{% from "_macros.html" import field %}<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Ridgeline Supply{% endblock %}</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="/">Ridgeline Supply</a>
+    <form class="search" action="/products" method="get" role="search">
+      <label class="sr" for="site-q">Search products</label>
+      <input id="site-q" name="q" type="search" placeholder="Search tents, mugs, field guides" value="{{ request.query_params.get('q', '') }}">
+      <button type="submit">Search</button>
+    </form>
+    <nav aria-label="Account">
+      <a href="/cart">Cart <span class="count" aria-label="items in cart">{{ cart_count }}</span></a>
+      {% if user %}
+        <a href="/account">{{ user.name }}</a>
+        {% if user.is_admin %}<a href="/admin">Admin</a>{% endif %}
+        <form class="inline" method="post" action="/logout"><button class="link" type="submit">Log out</button></form>
+      {% else %}
+        <a href="/login">Log in</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+<nav class="categories" aria-label="Categories">
+  <div class="wrap">
+    <a href="/products">All products</a>
+    {% for c in categories %}<a href="/products?category={{ c['slug'] }}">{{ c['name'] }}</a>{% endfor %}
+  </div>
+</nav>
+{% if notice %}<p class="notice" role="status">{{ notice }}</p>{% endif %}
+<main>
+  <div class="wrap">
+    {% block content %}{% endblock %}
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="wrap two">
+    <div>
+      <h2>Ridgeline Supply</h2>
+      <p class="muted">Outdoor and home goods, shipped from a warehouse in Essex. Orders over $50 ship free.</p>
+    </div>
+    <form method="post" action="/newsletter" class="stack" aria-labelledby="nl-title">
+      <h3 id="nl-title">Get the field notes</h3>
+      <p class="muted">One email a month about new stock. Unsubscribe any time.</p>
+      <div class="row">
+        <div class="field"><label for="footer-email">Email address</label><input id="footer-email" name="email" type="email" required autocomplete="email"></div>
+      </div>
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+</footer>
+<script src="/static/app.js" defer></script>
+</body>
+</html>

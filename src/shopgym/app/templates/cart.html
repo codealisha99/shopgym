@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% from "_macros.html" import stock_line %}
+{% block title %}Your cart, Ridgeline Supply{% endblock %}
+{% block content %}
+<h1>Your cart</h1>
+{% if lines %}
+<table>
+  <thead><tr><th scope="col">Item</th><th scope="col" class="num">Price</th><th scope="col">Quantity</th><th scope="col" class="num">Line total</th><th scope="col"><span class="sr">Remove</span></th></tr></thead>
+  <tbody>
+  {% for line in lines %}
+    <tr>
+      <td><a href="/products/{{ line['sku'] }}">{{ line['name'] }}</a><br><span class="meta">{{ stock_line(line['stock']) }}</span></td>
+      <td class="num">{{ line['price_cents'] | money }}</td>
+      <td>
+        <form method="post" action="/cart/update" class="row" style="align-items:center">
+          <input type="hidden" name="sku" value="{{ line['sku'] }}">
+          <label class="sr" for="qty-{{ line['sku'] }}">Quantity for {{ line['name'] }}</label>
+          <input id="qty-{{ line['sku'] }}" name="qty" type="number" min="0" max="{{ line['stock'] }}" value="{{ line['qty'] }}" style="width:5rem">
+          <button class="ghost" type="submit">Update</button>
+        </form>
+      </td>
+      <td class="num">{{ line['line_cents'] | money }}</td>
+      <td>
+        <button type="button" class="link" data-open="rm-{{ line['sku'] }}">Remove</button>
+        <dialog id="rm-{{ line['sku'] }}" class="modal" aria-labelledby="rm-{{ line['sku'] }}-title">
+          <h2 id="rm-{{ line['sku'] }}-title">Remove {{ line['name'] }}?</h2>
+          <p>It will leave your cart. You can add it again from the catalogue.</p>
+          <form method="post" action="/cart/remove" class="actions">
+            <input type="hidden" name="sku" value="{{ line['sku'] }}">
+            <button type="button" class="ghost" data-close>Keep it</button>
+            <button type="submit" class="primary">Remove item</button>
+          </form>
+        </dialog>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<div class="totals" style="margin-top:1.5rem">
+  <div><span>Subtotal</span><span>{{ subtotal | money }}</span></div>
+  <div class="meta"><span>Shipping and discounts</span><span>Calculated at checkout</span></div>
+  <div class="actions" style="justify-content:flex-end"><a class="button primary" href="/checkout">Go to checkout</a></div>
+</div>
+{% else %}
+<p>Your cart is empty. <a href="/products">Browse the catalogue</a>.</p>
+{% endif %}
+{% endblock %}

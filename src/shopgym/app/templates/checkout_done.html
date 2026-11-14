@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order['number'] }} placed, Ridgeline Supply{% endblock %}
+{% block content %}
+<h1>Thank you. Order #{{ order['number'] }} is placed.</h1>
+<p>We sent the details to {{ order['email'] }}. It will ship from our Essex warehouse in one or two working days.</p>
+<p class="tag large">{{ order['total_cents'] | money }}</p>
+<div class="actions">
+  {% if user %}<a class="button primary" href="/account/orders/{{ order['number'] }}">View order</a>{% endif %}
+  <a class="button ghost" href="/products">Keep shopping</a>
+</div>
+{% endblock %}

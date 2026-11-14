@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Your account, Ridgeline Supply{% endblock %}
+{% block content %}
+<h1>Hello, {{ user['name'] }}</h1>
+<div class="two">
+  <section>
+    <h2>Recent orders</h2>
+    {% if orders %}
+    <table>
+      <thead><tr><th scope="col">Order</th><th scope="col">Placed</th><th scope="col">Status</th><th scope="col" class="num">Total</th></tr></thead>
+      <tbody>{% for o in orders %}<tr><td><a href="/account/orders/{{ o['number'] }}">#{{ o['number'] }}</a></td><td>{{ o['created_at'][:10] }}</td><td>{{ o['status'] }}</td><td class="num">{{ o['total_cents'] | money }}</td></tr>{% endfor %}</tbody>
+    </table>
+    <p><a href="/account/orders">All orders</a></p>
+    {% else %}
+    <p>You have not placed an order yet. <a href="/products">Start with the catalogue</a>.</p>
+    {% endif %}
+  </section>
+  <aside class="stack">
+    <h2>Preferences</h2>
+    <form method="post" action="/account/newsletter" class="stack">
+      <div class="check"><input id="subscribed" name="subscribed" type="checkbox" value="1"{% if subscribed %} checked{% endif %}><label for="subscribed">Send me the monthly newsletter</label></div>
+      <button type="submit">Save preference</button>
+    </form>
+    <p><a href="/account/profile">Edit profile</a><br><a href="/account/addresses">Manage addresses</a></p>
+  </aside>
+</div>
+{% endblock %}
