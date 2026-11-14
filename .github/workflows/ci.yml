@@ -1,0 +1,33 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+      - run: uv run playwright install --with-deps chromium
+      - run: make test
+
+  deploy:
+    name: deploy landing page
+    needs: test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy site/ to Vercel production
+        if: env.VERCEL_TOKEN != ''
+        working-directory: site
+        run: npx --yes vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"
+      - name: Skipped (no VERCEL_TOKEN secret)
+        if: env.VERCEL_TOKEN == ''
+        run: echo "::notice::VERCEL_TOKEN secret is not set, landing page deploy skipped"

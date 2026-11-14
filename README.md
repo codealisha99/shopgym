@@ -1,5 +1,7 @@
 # ShopGym: a computer-use evaluation environment for browser agents
 
+[![ci](https://github.com/codealisha99/shopgym/actions/workflows/ci.yml/badge.svg)](https://github.com/codealisha99/shopgym/actions/workflows/ci.yml)
+
 - **Landing page:** https://shopgym-site.vercel.app (static, with a replay of real oracle episodes)
 - **Live demo:** none yet. The Railway project could not be created because the account's trial has expired and needs a plan. Run the store locally with `make serve`.
 
