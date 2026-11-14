@@ -32,6 +32,7 @@ def test_valid_actions_parse(raw, expected_type):
     {"type": "goto", "url": "/a\\b"},
     {"type": "scroll", "direction": "sideways"},
     {"type": "scroll", "amount": 10**9},
+    {"type": "scroll", "amount": True},
     {"type": "press", "key": "x" * 31},
     {"type": "finish", "answer": 42},
 ])

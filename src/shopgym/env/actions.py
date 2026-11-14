@@ -80,7 +80,7 @@ def _parse_scroll(raw: dict) -> Action:
     if direction not in ("up", "down"):
         raise ActionError("scroll direction must be 'up' or 'down'")
     amount = raw.get("amount", 600)
-    if not isinstance(amount, int) or not 1 <= amount <= 5000:
+    if isinstance(amount, bool) or not isinstance(amount, int) or not 1 <= amount <= 5000:
         raise ActionError("scroll amount must be an integer from 1 to 5000")
     return Action(type="scroll", direction=direction, amount=amount)
 
